@@ -8,7 +8,6 @@ namespace ApplesGame
 	{
 		apple.applePosition = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 		apple.sprite.setTexture(game.appleTexture);
-		apple.appleEaten = false;
 		SetSpriteSize(apple.sprite, APPLE_SIZE, APPLE_SIZE);
 		SetSpriteOrigin(apple.sprite, 0.5, 0.5);
 	}
@@ -23,17 +22,7 @@ namespace ApplesGame
 	{
 		apple.applePosition = newPosition;
 	}
-
-	void SetAppleEaten(Apple& apple)
-	{
-		apple.appleEaten = true;
-	}
-
-	bool IsAppleEaten(const Apple& apple)
-	{
-		return apple.appleEaten;
-	}
-
+		
 	Circle GetAppleCollider(const Apple& apple)
 	{
 		return Circle{ apple.applePosition, APPLE_SIZE / 2.f };

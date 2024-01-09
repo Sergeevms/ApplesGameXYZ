@@ -7,12 +7,18 @@ namespace ApplesGame
 	{
 		if (apples)
 			delete[] apples;
+		if (isAppleEaten)
+			delete[] isAppleEaten;
 	}
+
 	void ApplesMassive::InitApples(const int newApplesCount, const Game& game)
 	{
 		if (apples)
 			delete[] apples;
+		if (isAppleEaten)
+			delete[] isAppleEaten;
 		apples = new Apple[newApplesCount];
+		isAppleEaten = new int16_t[(newApplesCount >> appleEatenMassiveBitOffset) + 1]{ 0 };
 		applesCount = newApplesCount;
 		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
 		{
@@ -22,16 +28,31 @@ namespace ApplesGame
 
 	void ApplesMassive::DrawApples(sf::RenderWindow& window)
 	{
-		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
+		for (int i = 0; i < applesCount; ++i)
 		{
-			if (!apple->appleEaten)
+			if (!(isAppleEaten[(i >> appleEatenMassiveBitOffset)] & (1 << (i & applesEatenMask))))
 			{
-				DrawApple(*apple, window);
+				DrawApple(apples[i], window);
 			}
 		}
 	}
 
-	Apple* ApplesMassive::begin()
+	bool ApplesMassive::IsAppleEaten(int i)
+	{
+		return isAppleEaten[i >> appleEatenMassiveBitOffset] & (1 << (i & applesEatenMask));
+	}
+
+	void ApplesMassive::SetAppleEaten(int i)
+	{
+		isAppleEaten[i >> appleEatenMassiveBitOffset] |= (1 << (i & applesEatenMask));
+	}
+
+	int ApplesMassive::GetCount()
+	{
+		return applesCount;
+	}
+
+	Apple* ApplesMassive::Begin()
 	{
 		return apples;
 	}
@@ -41,7 +62,12 @@ namespace ApplesGame
 		return applesCount;
 	}
 
-	Apple* ApplesMassive::end()
+	Apple& ApplesMassive::operator[](int i)
+	{
+		return *(apples + i);
+	}
+
+	Apple* ApplesMassive::End()
 	{
 		return apples + applesCount;
 	}

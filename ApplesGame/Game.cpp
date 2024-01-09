@@ -101,9 +101,9 @@ namespace ApplesGame
 		UpdatePlayerPosition(game.player, deltaTime);
 
 		//apple collision check
-		for (auto& apple : game.apples)
+		for (int i = 0; i < game.apples.GetCount(); ++i)
 		{
-			if (DoShapesCollide(GetAppleCollider(apple), GetPlayerCollider(game.player)) && !IsAppleEaten(apple))
+			if (DoShapesCollide(GetAppleCollider(game.apples[i]), GetPlayerCollider(game.player)) && !game.apples.IsAppleEaten(i))
 			{
 				++game.numEatenApples;
 				game.appleEatenSound.play();
@@ -113,11 +113,11 @@ namespace ApplesGame
 				}
 				if (game.gameState & Game::GameState::IsInfiniteApples)
 				{
-					SetApplePosition(apple, GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+					SetApplePosition(game.apples[i], GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
 				}
 				else 
 				{
-					SetAppleEaten(apple);
+					game.apples.SetAppleEaten(i);
 					if (game.numEatenApples == game.apples.ApplesCount())
 					{
 						game.gameState |= Game::GameState::IsGameWinned;

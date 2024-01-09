@@ -8,7 +8,6 @@ namespace ApplesGame
 
 	struct Apple
 	{
-		bool appleEaten;
 		Position2D applePosition;
 		sf::Sprite sprite;
 	};
@@ -16,7 +15,5 @@ namespace ApplesGame
 	void InitApple(Apple& apple, const Game& game);
 	void DrawApple(Apple& apple, sf::RenderWindow& window);
 	void SetApplePosition(Apple& apple, const Position2D applePosition);
-	void SetAppleEaten(Apple& apple);
-	bool IsAppleEaten(const Apple& apple);
 	Circle GetAppleCollider(const Apple& apple);
 }

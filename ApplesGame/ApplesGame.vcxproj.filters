@@ -58,4 +58,7 @@
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="RecordTablePlayerNames" />
+  </ItemGroup>
 </Project>

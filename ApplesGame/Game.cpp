@@ -1,8 +1,11 @@
 #include "Game.h"
 #include <assert.h>
+#include <fstream>
 #include "Constants.h"
 #include "Math.h"
 #include "Player.h"
+#include "RecordTable.h"
+
 
 namespace ApplesGame
 {
@@ -21,7 +24,7 @@ namespace ApplesGame
 			while (TryToSetRockPosition(rock, game.noRocksRectangle, GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT)));
 		}
 		game.numEatenApples = 0;
-		game.timeSinceGameOvered = 0;
+		game.gameOveredTimer = 0;
 	}
 
 	void InitGame(Game& game)
@@ -32,6 +35,24 @@ namespace ApplesGame
 		assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png"));
 		assert(game.appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
 		assert(game.playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
+
+		//Get apples count for finite apple game modes
+		game.finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);
+
+		// Read player names for record table and initialize record tables for each game mode
+		std::ifstream playerNamesInputStream(RESOURCES_PATH + "/recordTableNicknames.txt");
+		std::vector<std::string> initialPlayerNames;
+		std::string currentPlayerName;
+		while (std::getline(playerNamesInputStream, currentPlayerName))
+		{
+			initialPlayerNames.push_back(currentPlayerName);
+		}
+		for (int i = 0; i < 4; ++i)
+		{
+			game.uiState.recordTables.push_back(RecordTable(initialPlayerNames, RECORDS_TABLE_SIZE, 
+				Game::GameState::IsInfiniteApples & i ? MAX_APPLES : game.finiteApplesCount, game.font, i));
+		}
+
 
 		InitUI(game.uiState, game.font);
 		game.playerDeathSound.setBuffer(game.playerDeathSoundBuffer);
@@ -50,13 +71,20 @@ namespace ApplesGame
 
 	void StartGameOveredState(Game& game)
 	{
-		SetGameOveredTypeStateUI(game.uiState, game.gameState);
+		SetGameOveredTypeStateUI(game.uiState, game);
 		if (!(game.gameState & Game::GameState::IsGameWinned))
 		{
 			game.playerDeathSound.play();
 		}
-		game.timeSinceGameOvered = 0.f;
+		game.gameOveredTimer = 0.f;
 		game.gameState |= Game::GameState::IsGameOvered;
+	}
+
+	void StartGameRecordTableState(Game& game)
+	{
+		game.gameState |= Game::GameState::IsRecordTableShowing;
+		game.gameOveredTimer = 0.f;
+		UpdatePlayerRecord(game.uiState, game);
 	}
 
 	void UpdateGame(Game& game, const float deltaTime)
@@ -69,6 +97,10 @@ namespace ApplesGame
 		{
 			UpdateGameStartingState(game);
 		}
+		else if (game.gameState & Game::GameState::IsRecordTableShowing)
+		{
+			UpdateGameRecordTableState(game, deltaTime);
+		}
 		else if (!(game.gameState & Game::GameState::IsGameOvered))
 		{
 			UpdateGamePlayingState(game, deltaTime);
@@ -77,6 +109,12 @@ namespace ApplesGame
 		{
 			UpdateGameOveredState(game, deltaTime);
 		}
+	}
+
+	void UpdateGameRecordTableState(Game& game, const float deltaTime)
+	{
+		game.gameOveredTimer += deltaTime;
+		UpdateRecordTableStateUI(game.uiState, game);
 	}
 
 	void UpdateGamePlayingState(Game& game, const float deltaTime)
@@ -146,12 +184,11 @@ namespace ApplesGame
 
 	void UpdateGameOveredState(Game& game, const float deltaTime)
 	{
-		game.timeSinceGameOvered += deltaTime;
-		if (game.timeSinceGameOvered >= RESTART_TIME)
+		game.gameOveredTimer += deltaTime;
+		if (game.gameOveredTimer >= BEFORE_SHOWING_RECORD_TABLE_TIME)
 		{
-			StartGameStartingState(game);
+			StartGameRecordTableState(game);
 		}
-		UpdateGameOveredStateUI(game.uiState, game);
 	}
 
 	void DrawGame(sf::RenderWindow& window, Game& game)
@@ -167,10 +204,12 @@ namespace ApplesGame
 		}
 		DrawUI(game.uiState, window, game.gameState);
 	}
+
 	void StartGameStartingState(Game& game)
 	{
-		game.gameState |= Game::GameState::IsGameRestarting;
+		game.gameState = Game::GameState::IsGameRestarting;
 	}
+
 	void UpdateGameStartingState(Game& game)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))

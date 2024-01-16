@@ -13,10 +13,10 @@ namespace ApplesGame
 			IsNotEaten = 1
 		};
 
-		const static int appleEatenMassiveBitOffset = 4;
-		const static int applesEatenMask = (1 << 16) - 1;
+		const static int appleEatenMassiveBitOffset = 3;
+		const static int applesEatenMask = (1 << appleEatenMassiveBitOffset) - 1;
 		int applesCount;
-		int16_t* isAppleEaten;
+		uint8_t* isAppleEaten;
 		Apple* apples;
 	public:
 		ApplesMassive() :applesCount{ 0 }, apples{ nullptr }, isAppleEaten{ nullptr } {};

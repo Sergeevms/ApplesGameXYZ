@@ -164,6 +164,7 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RecordTable.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
@@ -174,11 +175,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RecordTable.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="UI.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RecordTablePlayerNames" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

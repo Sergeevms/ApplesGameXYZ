@@ -16,9 +16,15 @@ namespace ApplesGame
 		uiState.hintText.setFillColor(sf::Color::White);
 		uiState.hintText.setCharacterSize(15);
 
-		// Init game restart text
-		uiState.restartText.setFont(font);
-		uiState.restartText.setCharacterSize(25);
+		// Init record table restart text
+		uiState.recordTableRestartTimeText.setFont(font);
+		uiState.recordTableRestartTimeText.setCharacterSize(15);
+		uiState.recordTableRestartTimeText.setString("Game will automatically restart in ");
+		uiState.recordTableRestartText.setFont(font);
+		uiState.recordTableRestartText.setCharacterSize(40);
+		uiState.recordTableRestartText.setString("Press Space to restart game now");
+		uiState.recordTableRestartText.setPosition(SCREEN_WIDTH / 2.f - uiState.recordTableRestartText.getGlobalBounds().width / 2.f,
+			SCREEN_HEIGHT - uiState.recordTableRestartText.getGlobalBounds().height - uiState.recordTableRestartTimeText.getGlobalBounds().height * 3);
 
 		//Game over text init;
 		uiState.gameOverText.setFont(font);
@@ -49,16 +55,9 @@ namespace ApplesGame
 			SCREEN_HEIGHT / 2.f - uiState.gameModeChoosingText.getGlobalBounds().height / 2.f);
 	}
 
-	void UpdateGameOveredStateUI(UIState& uiState, const Game& game)
+	void UpdateRecordTable(UIState& uiState, const Game& game)
 	{
-		std::stringstream gameRestartText = {};
-		gameRestartText << "Game will restart in " << std::setprecision(2) << (RESTART_TIME - game.timeSinceGameOvered) << " seconds";
-		uiState.restartText.setString(gameRestartText.str());
-		uiState.restartText.setPosition(SCREEN_WIDTH / 2.f - uiState.restartText.getGlobalBounds().width / 2.f,
-			SCREEN_HEIGHT / 2.f + uiState.gameOverText.getGlobalBounds().height);
-		uiState.gameOverScoreText.setString("Your score: " + std::to_string(game.numEatenApples));
-		uiState.gameOverScoreText.setPosition(SCREEN_WIDTH / 2.f - uiState.gameOverScoreText.getGlobalBounds().width / 2.f,
-			SCREEN_HEIGHT / 2.f - uiState.gameOverText.getGlobalBounds().height / 2.f - uiState.gameOverScoreText.getGlobalBounds().height);
+		uiState.recordTables[game.gameModeBitmask & game.gameState].UpdatePlayerScore(game.numEatenApples);
 	}
 
 	void UpdateGamePlayingStateUI(UIState& uiState, const Game& game)
@@ -67,9 +66,23 @@ namespace ApplesGame
 		uiState.scoreText.setPosition(SCREEN_WIDTH - uiState.scoreText.getGlobalBounds().width, 0);
 	}
 
-	void SetGameOveredTypeStateUI(UIState& uiState, const short gameState)
+	void UpdateRecordTableStateUI(UIState& uiState, const Game& game)
 	{
-		if (!(gameState & Game::GameState::IsGameWinned))
+		std::stringstream gameRestartText = {};
+		gameRestartText << "Game will automatically restart in " << std::setprecision(4) << (RECORD_TABLE_RESTART_TIME - game.gameOveredTimer) << " seconds";
+		uiState.recordTableRestartTimeText.setString(gameRestartText.str());
+		uiState.recordTableRestartTimeText.setPosition(SCREEN_WIDTH / 2.f - uiState.recordTableRestartTimeText.getGlobalBounds().width / 2.f,
+			SCREEN_HEIGHT - uiState.recordTableRestartTimeText.getGlobalBounds().height * 2);
+	}
+
+	void UpdatePlayerRecord(UIState& uiState, const Game& game)
+	{
+		uiState.recordTables[game.gameModeBitmask & game.gameState].UpdatePlayerScore(game.numEatenApples);
+	}
+
+	void SetGameOveredTypeStateUI(UIState& uiState, const Game& game)
+	{
+		if (!(game.gameState & Game::GameState::IsGameWinned))
 		{
 			uiState.gameOverText.setString("GAME OVER");
 			uiState.gameOverText.setFillColor(sf::Color::Red);
@@ -83,24 +96,35 @@ namespace ApplesGame
 			uiState.gameOverText.setPosition(SCREEN_WIDTH / 2.f - uiState.gameOverText.getGlobalBounds().width / 2.f,
 				SCREEN_HEIGHT / 2.f - uiState.gameOverText.getGlobalBounds().height / 2.f);
 		}
+		uiState.gameOverScoreText.setString("Your score: " + std::to_string(game.numEatenApples));
+		uiState.gameOverScoreText.setPosition(SCREEN_WIDTH / 2.f - uiState.gameOverScoreText.getGlobalBounds().width / 2.f,
+			SCREEN_HEIGHT / 2.f - uiState.gameOverText.getGlobalBounds().height / 2.f - uiState.gameOverScoreText.getGlobalBounds().height);
 	}
 
-	void DrawUI(const UIState& uiState, sf::RenderWindow& window, const short gameState)
+	void DrawUI(UIState& uiState, sf::RenderWindow& window, const short gameState)
 	{
-		window.draw(uiState.hintText);
-		if (!(gameState & Game::GameState::IsGameRestarting))
+		if (gameState & Game::GameState::IsRecordTableShowing)
 		{
-			window.draw(uiState.scoreText);
-			if (gameState & Game::GameState::IsGameOvered)
-			{
-				window.draw(uiState.restartText);
-				window.draw(uiState.gameOverText);
-				window.draw(uiState.gameOverScoreText);
-			}
+			uiState.recordTables[gameState & Game::gameModeBitmask].Draw(window);
+			window.draw(uiState.recordTableRestartTimeText);
+			window.draw(uiState.recordTableRestartText);
 		}
 		else
 		{
-			window.draw(uiState.gameModeChoosingText);
+			window.draw(uiState.hintText);
+			if (!(gameState & Game::GameState::IsGameRestarting))
+			{
+				window.draw(uiState.scoreText);
+				if (gameState & Game::GameState::IsGameOvered)
+				{					
+					window.draw(uiState.gameOverText);
+					window.draw(uiState.gameOverScoreText);
+				}
+			}
+			else
+			{
+				window.draw(uiState.gameModeChoosingText);
+			}
 		}
 	}
 }

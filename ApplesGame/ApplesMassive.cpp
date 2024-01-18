@@ -18,7 +18,7 @@ namespace ApplesGame
 		if (isAppleEaten)
 			delete[] isAppleEaten;
 		apples = new Apple[newApplesCount];
-		isAppleEaten = new int16_t[(newApplesCount >> appleEatenMassiveBitOffset) + 1]{ 0 };
+		isAppleEaten = new uint8_t[(newApplesCount >> appleEatenMassiveBitOffset) + 1]{ 0 };
 		applesCount = newApplesCount;
 		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
 		{

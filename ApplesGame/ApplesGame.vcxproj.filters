@@ -34,6 +34,9 @@
     <ClCompile Include="AppleColiderGrid.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="RecordTable.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -61,6 +64,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="AppleColiderGrid.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordTable.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

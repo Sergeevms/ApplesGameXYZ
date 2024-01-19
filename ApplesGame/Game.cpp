@@ -17,7 +17,7 @@ namespace ApplesGame
 		SetPlayerSpeed(game.player, INITIAL_SPEED);
 		SetPlayerDirection(game.player, PlayerDirection::Right);
 		// Init apples
-		game.apples.InitApples(GetRandomIntInRange(MIN_APPLES, MAX_APPLES), game);
+		game.apples.InitApples(game.gameState & Game::IsInfiniteApples ? GetRandomIntInRange(MIN_APPLES, MAX_APPLES) : game.finiteApplesCount, game);
 		// Init rocks	
 		for (auto& rock : game.rocks)
 		{
@@ -47,10 +47,11 @@ namespace ApplesGame
 		{
 			initialPlayerNames.push_back(currentPlayerName);
 		}
+		// Create record table for each playing mode
 		for (int i = 0; i < 4; ++i)
 		{
 			game.uiState.recordTables.push_back(RecordTable(initialPlayerNames, RECORDS_TABLE_SIZE, 
-				Game::GameState::IsInfiniteApples & i ? MAX_APPLES : game.finiteApplesCount, game.font, i));
+				Game::GameState::IsInfiniteApples & i ? (int)(MAX_APPLES * RECORDS_TABLE_MAX_COEFFICIENT) : game.finiteApplesCount, game.font, i));
 		}
 
 

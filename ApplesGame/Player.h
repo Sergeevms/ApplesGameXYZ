@@ -27,6 +27,7 @@ namespace ApplesGame
 	void SetPlayerDirection(Player& player, const PlayerDirection playerDirection);
 	void SetPlayerSpeed(Player& player, const float playerSpeed);
 	void SetPlayerPosition(Player& player, const Position2D position);
+	Position2D GetPosition(const Player& player);
 	float GetPlayerSpeed(const Player& player);
 	void UpdatePlayerPosition(Player& player, const float deltaTime);
 	Circle GetPlayerCollider(const Player& player);

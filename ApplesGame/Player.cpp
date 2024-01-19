@@ -44,6 +44,11 @@ namespace ApplesGame
 		player.playerPosition.y = position.y;
 	}
 
+	Position2D GetPosition(const Player& player)
+	{
+		return player.playerPosition;
+	}
+
 	void UpdatePlayerPosition(Player& player, const float deltaTime)
 	{
 		switch (player.playerDirection)

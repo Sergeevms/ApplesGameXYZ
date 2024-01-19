@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Apple.cpp" />
+    <ClCompile Include="AppleColiderGrid.cpp" />
     <ClCompile Include="ApplesMassive.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameMain.cpp" />
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apple.h" />
+    <ClInclude Include="AppleColiderGrid.h" />
     <ClInclude Include="ApplesMassive.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Game.h" />

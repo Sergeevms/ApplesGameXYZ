@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <assert.h>
 #include <fstream>
+#include <list>
 #include "Constants.h"
 #include "Math.h"
 #include "Player.h"
@@ -16,8 +17,13 @@ namespace ApplesGame
 		SetPlayerPosition(game.player, Position2D{ SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f });
 		SetPlayerSpeed(game.player, INITIAL_SPEED);
 		SetPlayerDirection(game.player, PlayerDirection::Right);
-		// Init apples
+		// Init apples and apples collider grid
+		game.appleCollderGrid.Clear();
 		game.apples.InitApples(game.gameState & Game::IsInfiniteApples ? GetRandomIntInRange(MIN_APPLES, MAX_APPLES) : game.finiteApplesCount, game);
+		for (int i = 0; i < game.apples.GetCount(); ++i)
+		{
+			game.appleCollderGrid.InsertApple(game.apples[i], i);
+		}
 		// Init rocks	
 		for (auto& rock : game.rocks)
 		{
@@ -38,6 +44,9 @@ namespace ApplesGame
 
 		//Get apples count for finite apple game modes
 		game.finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);
+
+		//Set size for apple collider grid
+		game.appleCollderGrid.SetGridSize(APPLES_COLLIDER_GRID_HEIGHT, APPLES_COLLIDER_GRID_WIDTH);
 
 		// Read player names for record table and initialize record tables for each game mode
 		std::ifstream playerNamesInputStream(RESOURCES_PATH + "/recordTableNicknames.txt");
@@ -62,7 +71,6 @@ namespace ApplesGame
 		game.noRocksRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {PLAYER_SIZE * NO_ROCKS_ZONE, PLAYER_SIZE * NO_ROCKS_ZONE} };
 
 		InitPlayer(game.player, game);
-		game.numEatenApples = 0;
 		for (auto& rock : game.rocks)
 		{
 			InitRock(rock, game);
@@ -116,6 +124,10 @@ namespace ApplesGame
 	{
 		game.gameOveredTimer += deltaTime;
 		UpdateRecordTableStateUI(game.uiState, game);
+		if (game.gameOveredTimer >= RECORD_TABLE_RESTART_TIME)
+		{
+			StartGameStartingState(game);
+		}
 	}
 
 	void UpdateGamePlayingState(Game& game, const float deltaTime)
@@ -140,10 +152,12 @@ namespace ApplesGame
 		UpdatePlayerPosition(game.player, deltaTime);
 
 		//apple collision check
-		for (int i = 0; i < game.apples.GetCount(); ++i)
+		std::list<int> nearestApplesIDList = game.appleCollderGrid.GetNearestAppleIDsList(game.player);
+		for (auto appleID = nearestApplesIDList.begin(); appleID != nearestApplesIDList.end(); ++appleID)
 		{
-			if (DoShapesCollide(GetAppleCollider(game.apples[i]), GetPlayerCollider(game.player)) && !game.apples.IsAppleEaten(i))
+			if (DoShapesCollide(GetAppleCollider(game.apples[*appleID]), GetPlayerCollider(game.player)) && !game.apples.IsAppleEaten(*appleID))
 			{
+				game.appleCollderGrid.EraseApple(game.apples[*appleID], *appleID);
 				++game.numEatenApples;
 				game.appleEatenSound.play();
 				if (game.gameState & Game::GameState::IsWithAcceleration)
@@ -152,11 +166,12 @@ namespace ApplesGame
 				}
 				if (game.gameState & Game::GameState::IsInfiniteApples)
 				{
-					SetApplePosition(game.apples[i], GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+					SetApplePosition(game.apples[*appleID], GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+					game.appleCollderGrid.InsertApple(game.apples[*appleID], *appleID);
 				}
 				else 
 				{
-					game.apples.SetAppleEaten(i);
+					game.apples.SetAppleEaten(*appleID);
 					if (game.numEatenApples == game.apples.ApplesCount())
 					{
 						game.gameState |= Game::GameState::IsGameWinned;

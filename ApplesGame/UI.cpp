@@ -69,7 +69,7 @@ namespace ApplesGame
 	void UpdateRecordTableStateUI(UIState& uiState, const Game& game)
 	{
 		std::stringstream gameRestartText = {};
-		gameRestartText << "Game will automatically restart in " << std::setprecision(4) << (RECORD_TABLE_RESTART_TIME - game.gameOveredTimer) << " seconds";
+		gameRestartText << "Game will automatically restart in " << std::setprecision(0)  << std::fixed << (RECORD_TABLE_RESTART_TIME - game.gameOveredTimer) << " seconds";
 		uiState.recordTableRestartTimeText.setString(gameRestartText.str());
 		uiState.recordTableRestartTimeText.setPosition(SCREEN_WIDTH / 2.f - uiState.recordTableRestartTimeText.getGlobalBounds().width / 2.f,
 			SCREEN_HEIGHT - uiState.recordTableRestartTimeText.getGlobalBounds().height * 2);

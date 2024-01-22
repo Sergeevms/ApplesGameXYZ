@@ -23,7 +23,7 @@ namespace ApplesGame
 		apple.applePosition = newPosition;
 	}
 
-	Position2D GetPosition(const Apple& apple)
+	const Position2D& GetPosition(const Apple& apple)
 	{
 		return apple.applePosition;
 	}

@@ -9,6 +9,7 @@
 #include "Math.h"
 #include "Constants.h"
 #include "RecordTable.h"
+#include "AppleColiderGrid.h"
 
 namespace ApplesGame
 {
@@ -39,6 +40,7 @@ namespace ApplesGame
 		Rock rocks[NUM_ROCKS];
 		Rectangle windowRectangle;
 		Rectangle noRocksRectangle;
+		AppleColliderGrid appleCollderGrid;
 
 		// Global game data;
 		short gameState; // bitmap for current mode and gamestate (game overed, playing, restarting)

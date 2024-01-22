@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <list>
 
 #include "Math.h"
 #include "Apple.h"
@@ -11,17 +12,16 @@ namespace ApplesGame
 	{
 		int gridHeight;
 		int gridWidth;
-		std::vector<std::vector<int>> grid;
+		std::vector<std::list<int>> grid;
 
-		int GetGridCellIndex(Position2D& position);
+		int GetGridCellIndex(const Position2D& position) const;
 	public:
-		AppleColliderGrid() : gridHeight {0}, gridWidth {0};
+		AppleColliderGrid();
 		AppleColliderGrid(int height, int width);
 		void SetGridSize(const int height, const int width);
 		void InsertApple(const Apple& apple, const int appleID);
 		void EraseApple(const Apple& apple, const int appleID);
 		void Clear();
-		std::vector<int> GetNearestAppleIDsList(const Player& player);
-	}
-
+		std::list<int> GetNearestAppleIDsList(const Player& player);
+	};
 }

@@ -3,6 +3,9 @@
 
 namespace ApplesGame
 {
+	AppleColliderGrid::AppleColliderGrid() : gridHeight{ 0 }, gridWidth{ 0 }
+	{
+	}
 	AppleColliderGrid::AppleColliderGrid(const int height, const int width)
 	{
 		SetGridSize(height, width);
@@ -16,17 +19,17 @@ namespace ApplesGame
 		grid.reserve(gridHeight * gridWidth);
 		for (int i = 0; i < gridHeight * gridWidth; ++i)
 		{
-			grid.push_back(std::vector<int>{});
+			grid.push_back(std::list<int>{});
 		}
 	}
 
-	int AppleColliderGrid::GetGridCellIndex(Position2D& position)
+	int AppleColliderGrid::GetGridCellIndex(const Position2D& position) const
 	{
 		const float cellHeight = SCREEN_HEIGHT / (float)gridHeight;
 		const float cellWidth = SCREEN_WIDTH / (float)gridWidth;
 
-		int cellX = position.x / cellWidth;
-		int cellY = position.y / cellHeight;
+		int cellX = (int) (position.x / cellWidth);
+		int cellY = (int) (position.y / cellHeight);
 
 		return cellY * gridWidth + cellX;
 	}
@@ -41,7 +44,7 @@ namespace ApplesGame
 	{
 		int cellIndex = GetGridCellIndex(GetPosition(apple));
 		auto last = std::remove(grid[cellIndex].begin(), grid[cellIndex].end(), appleID);
-		grid[cellIndex].erase(last, grid[cellIndex].end());
+		//grid[cellIndex].erase(last, grid[cellIndex].end());
 	}
 
 	void AppleColliderGrid::Clear()
@@ -52,9 +55,9 @@ namespace ApplesGame
 		}
 	}
 
-	std::vector<int> AppleColliderGrid::GetNearestAppleIDsList(const Player& player)
+	std::list<int> AppleColliderGrid::GetNearestAppleIDsList(const Player& player)
 	{
-		std::vector<int> appleIDsList;
+		std::list<int> appleIDsList;
 		int playerCellIndex = GetGridCellIndex(GetPosition(player));
 		for (int i = -1; i <= 1; ++i)
 		{

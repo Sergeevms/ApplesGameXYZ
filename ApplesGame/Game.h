@@ -37,7 +37,7 @@ namespace ApplesGame
 
 		Player player;
 		ApplesMassive apples;
-		Rock rocks[NUM_ROCKS];
+		std::vector<Rock> rocks;
 		Rectangle windowRectangle;
 		Rectangle noRocksRectangle;
 		AppleColliderGrid appleCollderGrid;

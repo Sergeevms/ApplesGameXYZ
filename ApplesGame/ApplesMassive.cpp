@@ -3,26 +3,22 @@
 
 namespace ApplesGame
 {
-	ApplesMassive::~ApplesMassive()
+	ApplesMassive::ApplesMassive()
 	{
-		if (apples)
-			delete[] apples;
-		if (isAppleEaten)
-			delete[] isAppleEaten;
+		apples.reserve(MAX_APPLES);
+		isAppleEaten.reserve((MAX_APPLES >> appleEatenMassiveBitOffset) + 1);
 	}
 
 	void ApplesMassive::InitApples(const int newApplesCount, const Game& game)
-	{
-		if (apples)
-			delete[] apples;
-		if (isAppleEaten)
-			delete[] isAppleEaten;
-		apples = new Apple[newApplesCount];
-		isAppleEaten = new uint8_t[(newApplesCount >> appleEatenMassiveBitOffset) + 1]{ 0 };
+	{		
 		applesCount = newApplesCount;
-		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
+		for (int i = 0; i < applesCount; ++i)
 		{
-			InitApple(*apple, game);
+			apples.push_back(Apple(game));
+		}
+		for (int i = 0; i < (newApplesCount >> appleEatenMassiveBitOffset) + 1; ++i)
+		{
+			isAppleEaten.push_back(0);
 		}
 	}
 
@@ -32,29 +28,29 @@ namespace ApplesGame
 		{
 			if (!(isAppleEaten[(i >> appleEatenMassiveBitOffset)] & (1 << (i & applesEatenMask))))
 			{
-				DrawApple(apples[i], window);
+				apples[i].DrawApple(window);
 			}
 		}
 	}
 
-	bool ApplesMassive::IsAppleEaten(int i)
+	bool ApplesMassive::IsAppleEaten(const int i)
 	{
 		return isAppleEaten[i >> appleEatenMassiveBitOffset] & (1 << (i & applesEatenMask));
 	}
 
-	void ApplesMassive::SetAppleEaten(int i)
+	void ApplesMassive::SetAppleEaten(const int i)
 	{
 		isAppleEaten[i >> appleEatenMassiveBitOffset] |= (1 << (i & applesEatenMask));
 	}
 
-	int ApplesMassive::GetCount()
+	int ApplesMassive::GetCount() const
 	{
 		return applesCount;
 	}
 
-	Apple* ApplesMassive::Begin()
+	std::vector<Apple>::iterator ApplesMassive::Begin()
 	{
-		return apples;
+		return apples.begin();
 	}
 
 	int ApplesMassive::ApplesCount() const
@@ -64,11 +60,11 @@ namespace ApplesGame
 
 	Apple& ApplesMassive::operator[](int i)
 	{
-		return *(apples + i);
+		return apples[i];
 	}
 
-	Apple* ApplesMassive::End()
+	std::vector<Apple>::iterator ApplesMassive::End()
 	{
-		return apples + applesCount;
+		return apples.end();
 	}
 }

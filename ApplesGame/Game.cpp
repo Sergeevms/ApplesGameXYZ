@@ -155,7 +155,7 @@ namespace ApplesGame
 		std::list<int> nearestApplesIDList = game.appleCollderGrid.GetNearestAppleIDsList(game.player);
 		for (auto appleID = nearestApplesIDList.begin(); appleID != nearestApplesIDList.end(); ++appleID)
 		{
-			if (DoShapesCollide(GetAppleCollider(game.apples[*appleID]), GetPlayerCollider(game.player)) && !game.apples.IsAppleEaten(*appleID))
+			if (DoShapesCollide(game.apples[*appleID].GetCollider(), GetPlayerCollider(game.player)) && !game.apples.IsAppleEaten(*appleID))
 			{
 				game.appleCollderGrid.EraseApple(game.apples[*appleID], *appleID);
 				++game.numEatenApples;
@@ -166,7 +166,7 @@ namespace ApplesGame
 				}
 				if (game.gameState & Game::GameState::IsInfiniteApples)
 				{
-					SetApplePosition(game.apples[*appleID], GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+					game.apples[*appleID].SetPosition(GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
 					game.appleCollderGrid.InsertApple(game.apples[*appleID], *appleID);
 				}
 				else 

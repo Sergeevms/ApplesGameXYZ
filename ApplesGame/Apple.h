@@ -6,15 +6,15 @@ namespace ApplesGame
 {
 	struct Game;
 
-	struct Apple
+	class Apple
 	{
 		Position2D applePosition;
 		sf::Sprite sprite;
-	};
-
-	void InitApple(Apple& apple, const Game& game);
-	void DrawApple(Apple& apple, sf::RenderWindow& window);
-	void SetApplePosition(Apple& apple, const Position2D applePosition);
-	const Position2D& GetPosition(const Apple& apple);
-	Circle GetAppleCollider(const Apple& apple);
+	public:
+		Apple(const Game& game);
+		void DrawApple(sf::RenderWindow& window);
+		void SetPosition(const Position2D applePosition);
+		const Position2D& GetPosition() const;
+		Circle GetCollider();
+	};	
 }

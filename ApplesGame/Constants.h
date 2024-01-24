@@ -19,7 +19,7 @@ namespace ApplesGame
 	const float ROCK_SIZE = 30.f;
 	const float NO_ROCKS_ZONE = 8.f; // Set zone where will be no rocks in PLAYER_SIZEs
 	const int RECORDS_TABLE_SIZE = 10;
-	const float RECORDS_TABLE_MAX_COEFFICIENT = 2.5f;
+	const float RECORDS_TABLE_MAX_COEFFICIENT = 2.f;
 	const int APPLES_COLLIDER_GRID_WIDTH = 16;
 	const int APPLES_COLLIDER_GRID_HEIGHT = 12;
 }

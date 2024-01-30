@@ -4,32 +4,32 @@
 
 namespace ApplesGame
 {
-	void InitApple(Apple& apple, const Game& game)
+	Apple::Apple(const sf::Texture& appleTexture)
 	{
-		apple.applePosition = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
-		apple.sprite.setTexture(game.appleTexture);
-		SetSpriteSize(apple.sprite, APPLE_SIZE, APPLE_SIZE);
-		SetSpriteOrigin(apple.sprite, 0.5, 0.5);
+		applePosition = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
+		sprite.setTexture(appleTexture);
+		SetSpriteSize(sprite, APPLE_SIZE, APPLE_SIZE);
+		SetSpriteOrigin(sprite, 0.5, 0.5);
 	}
 
-	void DrawApple(Apple& apple, sf::RenderWindow& window)
+	void Apple::DrawApple(sf::RenderWindow& window)
 	{
-		apple.sprite.setPosition({ apple.applePosition.x, apple.applePosition.y });
-		window.draw(apple.sprite);
+		sprite.setPosition({ applePosition.x, applePosition.y });
+		window.draw(sprite);
 	}
 
-	void SetApplePosition(Apple& apple, const Position2D newPosition)
+	void Apple::SetPosition(const Position2D newPosition)
 	{
-		apple.applePosition = newPosition;
+		applePosition = newPosition;
 	}
 
-	Position2D GetPosition(const Apple& apple)
+	const Position2D& Apple::GetPosition() const
 	{
-		return apple.applePosition;
+		return applePosition;
 	}
 		
-	Circle GetAppleCollider(const Apple& apple)
+	Circle Apple::GetCollider()
 	{
-		return Circle{ apple.applePosition, APPLE_SIZE / 2.f };
+		return Circle{ applePosition, APPLE_SIZE / 2.f };
 	}	
 }

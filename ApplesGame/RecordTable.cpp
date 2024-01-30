@@ -13,7 +13,7 @@ namespace ApplesGame
 		recordTableData.reserve(RECORDS_TABLE_SIZE);
 		recordTableRowsText.reserve(RECORDS_TABLE_SIZE);
 		std::vector<RecordTableRow> currentSet;
-		for (std::string i : playerNames)
+		for (std::string const& i : playerNames)
 		{
 			currentSet.push_back(RecordTableRow(GetRandomIntInRange(0, maxScore), i));
 		}
@@ -27,16 +27,16 @@ namespace ApplesGame
 		std::string headerText{ "Record table of " };
 		switch (gameMode)
 		{
-		case Game::GameModes::FiniteApllesWithAcceleration:
+		case GameModes::FiniteApllesWithAcceleration:
 			headerText.append("finite apples with acceleration");
 			break;
-		case Game::GameModes::FiniteApplesWithoutAcceleration:
+		case GameModes::FiniteApplesWithoutAcceleration:
 			headerText.append("finite apples without acceleration");
 			break;
-		case Game::GameModes::InfiniteApplesWithAcceleartion:
+		case GameModes::InfiniteApplesWithAcceleartion:
 			headerText.append("infinite apples with acceleration");
 			break;
-		case Game::GameModes::InfinteApplesWithoutAcceleration:
+		case GameModes::InfinteApplesWithoutAcceleration:
 			headerText.append("infinite apples without acceleration");
 			break;
 		}
@@ -90,7 +90,7 @@ namespace ApplesGame
 			2.f * header.getGlobalBounds().height + i * header.getGlobalBounds().height));
 	}
 
-	const void RecordTable::Draw(sf::RenderWindow& window)
+	void RecordTable::Draw(sf::RenderWindow& window) const
 	{
 		window.draw(header);
 		for (sf::Text row : recordTableRowsText)

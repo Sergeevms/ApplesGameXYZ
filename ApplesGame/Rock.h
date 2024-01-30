@@ -4,19 +4,19 @@
 
 namespace ApplesGame
 {
-	struct Game;
+	class Game;
 
-	struct Rock
+	class Rock
 	{
-		Position2D rockPosition;
+		Position2D position;
 		sf::Sprite sprite;
-	};
+	public:
+		void InitRock(const sf::Texture& rockTexture);
+		void Draw(sf::RenderWindow& window);
 
-	void InitRock(Rock& rock, const Game& game);
-	void DrawRock(Rock& rock, sf::RenderWindow& window);
-
-	//set rock position to position; 
-	//return true if rock don't collide with noRockRectangle, false else
-	bool TryToSetRockPosition(Rock& rock, const Rectangle& noRockRectangle, const Position2D position);
-	Rectangle getRockCollider(const Rock& rock);
+		//set rock position to position; 
+		//return true if rock don't collide with noRockRectangle, false else
+		bool TryToSetRockPosition(const Rectangle& noRockRectangle, const Position2D position);
+		Rectangle getCollider();
+	};	
 }

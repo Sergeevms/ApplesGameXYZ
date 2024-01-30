@@ -9,12 +9,12 @@ namespace ApplesGame
 		isAppleEaten.reserve((MAX_APPLES >> appleEatenMassiveBitOffset) + 1);
 	}
 
-	void ApplesMassive::InitApples(const int newApplesCount, const Game& game)
+	void ApplesMassive::InitApples(const int newApplesCount, const sf::Texture& appleTexture)
 	{		
 		applesCount = newApplesCount;
 		for (int i = 0; i < applesCount; ++i)
 		{
-			apples.push_back(Apple(game));
+			apples.push_back(Apple(appleTexture));
 		}
 		for (int i = 0; i < (newApplesCount >> appleEatenMassiveBitOffset) + 1; ++i)
 		{

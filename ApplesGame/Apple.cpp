@@ -4,10 +4,10 @@
 
 namespace ApplesGame
 {
-	Apple::Apple(const Game& game)
+	Apple::Apple(const sf::Texture& appleTexture)
 	{
 		applePosition = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
-		sprite.setTexture(game.appleTexture);
+		sprite.setTexture(appleTexture);
 		SetSpriteSize(sprite, APPLE_SIZE, APPLE_SIZE);
 		SetSpriteOrigin(sprite, 0.5, 0.5);
 	}

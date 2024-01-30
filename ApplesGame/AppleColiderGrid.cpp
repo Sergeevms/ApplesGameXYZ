@@ -49,7 +49,9 @@ namespace ApplesGame
 	std::list<int> AppleColliderGrid::GetNearestAppleIDsList(const Player& player)
 	{
 		std::list<int> appleIDsList;
-		int playerCellIndex = GetGridCellIndex(GetPosition(player));
+		int playerCellIndex = GetGridCellIndex(player.GetPosition());
+		std::list<int> appleIDsList;
+		int playerCellIndex = GetGridCellIndex(player.GetPosition());
 		for (int i = -1; i <= 1; ++i)
 		{
 			for (int j = -1; j <= 1; ++j)

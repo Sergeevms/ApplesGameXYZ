@@ -13,7 +13,6 @@ namespace ApplesGame
 		int gridHeight = 0;
 		int gridWidth = 0;
 		std::vector<std::list<int>> grid;
-
 		int GetGridCellIndex(const Position2D& position) const;
 	public:
 		void SetGridSize(const int height, const int width);

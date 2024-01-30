@@ -5,8 +5,6 @@
 
 namespace ApplesGame
 {
-	struct Game;
-
 	class ApplesMassive
 	{
 		enum AppleEatenState
@@ -23,7 +21,7 @@ namespace ApplesGame
 
 	public:
 		ApplesMassive();
-		void InitApples(const int newApplesCount, const Game& game);
+		void InitApples(const int newApplesCount, const sf::Texture& appleTexture);
 		void DrawApples(sf::RenderWindow& window);
 		bool IsAppleEaten(const int i);
 		void SetAppleEaten(const int i);

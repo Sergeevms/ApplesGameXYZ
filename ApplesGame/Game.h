@@ -13,28 +13,31 @@
 
 namespace ApplesGame
 {
-	struct Game
+	enum class GameState
 	{
-		enum GameState //enumeration for using gameState bitmap
-		{
-			IsInfiniteApples = 1,
-			IsWithAcceleration = 1 << 1,
-			IsGameOvered = 1 << 2,
-			IsGameRestarting = 1 << 3,
-			IsGameWinned = 1 << 4,
-			IsRecordTableShowing = 1 << 5
-		};
+		None = 0,
+		Starting,
+		Playing,
+		GameOvered,
+		RecordTable
+	};
 
-		enum GameModes
-		{
-			FiniteApplesWithoutAcceleration = 0,
-			InfinteApplesWithoutAcceleration = GameState::IsInfiniteApples,
-			FiniteApllesWithAcceleration = GameState::IsWithAcceleration,
-			InfiniteApplesWithAcceleartion = GameState::IsInfiniteApples | GameState::IsWithAcceleration
-		};
+	enum GameOptions
+	{
+		InfiniteApples = 1,
+		WithAcceleration = 1 << 1
+	};
 
-		const static short gameModeBitmask = (1 << 2) - 1;
+	enum GameModes
+	{
+		FiniteApplesWithoutAcceleration = 0,
+		InfinteApplesWithoutAcceleration = GameOptions::InfiniteApples,
+		FiniteApllesWithAcceleration = GameOptions::WithAcceleration,
+		InfiniteApplesWithAcceleartion = GameOptions::InfiniteApples | GameOptions::WithAcceleration
+	};
 
+	class Game
+	{
 		Player player;
 		ApplesMassive apples;
 		std::vector<Rock> rocks;
@@ -43,11 +46,13 @@ namespace ApplesGame
 		AppleColliderGrid appleCollderGrid;
 
 		// Global game data;
-		short gameState; // bitmap for current mode and gamestate (game overed, playing, restarting)
+		std::vector<GameState> gameStateStack;
+		GameModes gameMode;
+		bool gameWinned;
 		int finiteApplesCount; //fixed apples count for finite apple game modes
 		int numEatenApples;
-		float gameOveredTimer;
-		UIState uiState;
+		float gameStateTimer;
+		UI gameUI;
 
 		// Resources
 		sf::Font font;
@@ -60,17 +65,36 @@ namespace ApplesGame
 
 		sf::Sound appleEatenSound;
 		sf::Sound playerDeathSound;
-	};
 
-	void InitGame(Game& game);
-	void StartGameStartingState(Game& game);
-	void StartGamePlayingState(Game& game);
-	void StartGameOveredState(Game& game);
-	void StartGameRecordTableState(Game& game);
-	void UpdateGame(Game& game, const float deltaTime);
-	void UpdateGameRecordTableState(Game& game, const float deltaTime);
-	void UpdateGameStartingState(Game& game);
-	void UpdateGamePlayingState(Game& game, const float deltaTime);
-	void UpdateGameOveredState(Game& game, const float deltaTime);
-	void DrawGame(sf::RenderWindow& window, Game& game);
+
+		void PushGameState(GameState state);
+		void PopGameState();
+		void SwitchGameState(GameState newState);
+		void SwitchGameStateInternal(GameState oldState, GameState newState);
+
+		void InitGameStartingState();
+		void UpdateGameStartingState();
+		void EndGameStartingState();
+
+		void InitGamePlayingState();
+		void UpdateGamePlayingState(const float deltaTime);
+		void EndGamePlayingState();
+
+		void InitGameOveredState();
+		void UpdateGameOveredState(const float deltaTime);
+		void EndGameOveredState();
+
+		void InitGameRecordTableState();
+		void UpdateGameRecordTableState(const float deltaTime);
+		void EndGameRecordTableState();
+
+	public:
+		void Init();
+		void Update(const float deltaTime);
+		void Draw(sf::RenderWindow& window);
+		void ShutdownGame();
+
+		GameState GetCurrentGameState();
+	};
+		
 }

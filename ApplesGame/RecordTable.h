@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <fstream>
 #include <string>
 #include <utility>
 #include <SFML/Graphics.hpp>
@@ -20,6 +21,6 @@ namespace ApplesGame
 	public:
 		RecordTable(const std::vector<std::string>& playerNames, int recordTableSize, int maxScore, const sf::Font& textFont, short gameMode);
 		void UpdatePlayerScore(int playerScore);
-		const void Draw(sf::RenderWindow&);
+		void Draw(sf::RenderWindow&) const;
 	};
 }

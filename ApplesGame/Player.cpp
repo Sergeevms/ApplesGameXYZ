@@ -4,86 +4,86 @@
 
 namespace ApplesGame
 {
-	void InitPlayer(Player& player, const Game& game)
+	void Player::Init(const sf::Texture& playerTexture)
 	{
-		player.sprite.setTexture(game.playerTexture);
-		SetSpriteSize(player.sprite, PLAYER_SIZE, PLAYER_SIZE);
-		SetSpriteOrigin(player.sprite, 0.5f, 0.5f);
+		sprite.setTexture(playerTexture);
+		SetSpriteSize(sprite, PLAYER_SIZE, PLAYER_SIZE);
+		SetSpriteOrigin(sprite, 0.5f, 0.5f);
 	}
 
-	void DrawPlayer(Player& player, sf::RenderWindow& window)
+	void Player::Draw(sf::RenderWindow& window)
 	{
-		player.sprite.setPosition(player.playerPosition.x, player.playerPosition.y);
+		sprite.setPosition(position.x, position.y);
 
-		if (player.playerDirection == PlayerDirection::Left)
+		if (direction == PlayerDirection::Left)
 		{
-			SetSpriteSize(player.sprite, -PLAYER_SIZE, PLAYER_SIZE);
-			player.sprite.setRotation(0.f);
+			SetSpriteSize(sprite, -PLAYER_SIZE, PLAYER_SIZE);
+			sprite.setRotation(0.f);
 		}
 		else
 		{
-			SetSpriteSize(player.sprite, PLAYER_SIZE, PLAYER_SIZE);
-			player.sprite.setRotation(-90.f * (float)player.playerDirection);
+			SetSpriteSize(sprite, PLAYER_SIZE, PLAYER_SIZE);
+			sprite.setRotation(-90.f * (float)direction);
 		}
-		window.draw(player.sprite);
+		window.draw(sprite);
 	}
 
-	void SetPlayerDirection(Player& player, const PlayerDirection playerDirection)
+	void Player::SetDirection(const PlayerDirection newDirection)
 	{
-		player.playerDirection = playerDirection;
+		direction = newDirection;
 	}
 
-	void SetPlayerSpeed(Player& player, const float playerSpeed)
+	void Player::SetSpeed(const float newSpeed)
 	{
-		player.playerSpeed = playerSpeed;
+		speed = newSpeed;
 	}
 
-	void SetPlayerPosition(Player& player, const Position2D position)
+	void Player::SetPosition(const Position2D newPosition)
 	{
-		player.playerPosition.x = position.x;
-		player.playerPosition.y = position.y;
+		position.x = newPosition.x;
+		position.y = newPosition.y;
 	}
 
-	Position2D GetPosition(const Player& player)
+	Position2D Player::GetPosition() const
 	{
-		return player.playerPosition;
+		return position;
 	}
 
-	void UpdatePlayerPosition(Player& player, const float deltaTime)
+	void Player::UpdatePosition(const float deltaTime)
 	{
-		switch (player.playerDirection)
+		switch (direction)
 		{
 		case PlayerDirection::Right:
 		{
-			player.playerPosition.x += player.playerSpeed * deltaTime;
+			position.x += speed * deltaTime;
 			break;
 		}
 		case PlayerDirection::Up:
 		{
-			player.playerPosition.y -= player.playerSpeed * deltaTime;
+			position.y -= speed * deltaTime;
 			break;
 		}
 		case PlayerDirection::Left:
 		{
-			player.playerPosition.x -= player.playerSpeed * deltaTime;
+			position.x -= speed * deltaTime;
 			break;
 		}
 		case PlayerDirection::Down:
 		{
-			player.playerPosition.y += player.playerSpeed * deltaTime;
+			position.y += speed * deltaTime;
 			break;
 		}
 		}
 	}
 
-	float GetPlayerSpeed(const Player& player)
+	float Player::GetSpeed() const
 	{
-		return player.playerSpeed;
+		return speed;
 	}
 
-	Circle GetPlayerCollider(const Player& player)
+	Circle Player::GetCollider()
 	{
-		return Circle{player.playerPosition, PLAYER_SIZE / 2.f};
+		return Circle{position, PLAYER_SIZE / 2.f};
 	}
 }
 

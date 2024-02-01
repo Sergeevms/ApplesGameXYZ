@@ -10,14 +10,11 @@ namespace ApplesGame
 {
 	class AppleColliderGrid
 	{
-		int gridHeight;
-		int gridWidth;
+		int gridHeight = 0;
+		int gridWidth = 0;
 		std::vector<std::list<int>> grid;
-
 		int GetGridCellIndex(const Position2D& position) const;
 	public:
-		AppleColliderGrid();
-		AppleColliderGrid(int height, int width);
 		void SetGridSize(const int height, const int width);
 		void InsertApple(const Apple& apple, const int appleID);
 		void EraseApple(const Apple& apple, const int appleID);

@@ -19,7 +19,7 @@ int main()
 	float lastTime = gameClock.getElapsedTime().asSeconds();
 
 	Game game;
-	InitGame(game);
+	game.Init();
 
 	while (window.isOpen())
 	{
@@ -46,9 +46,9 @@ int main()
 			}
 		}
 
-		UpdateGame(game, deltaTime);
+		game.Update(deltaTime);
 		window.clear();
-		DrawGame(window, game);
+		game.Draw(window);
 		window.display();
 	}
 	return 0;

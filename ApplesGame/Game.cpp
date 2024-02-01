@@ -30,7 +30,6 @@ namespace ApplesGame
 		}
 		numEatenApples = 0;
 		gameStateTimer = 0;
-		SwitchGameState(GameState::Playing);
 	}
 
 	void Game::Init()
@@ -61,12 +60,15 @@ namespace ApplesGame
 		noRocksRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {PLAYER_SIZE * NO_ROCKS_ZONE, PLAYER_SIZE * NO_ROCKS_ZONE} };
 
 		player.Init(playerTexture);
-		for (auto& rock : rocks)
+
+		rocks.reserve(NUM_ROCKS);
+		for (int i = 0; i < NUM_ROCKS; ++i)
 		{
-			rock.InitRock(rockTexture);
+			rocks.push_back(Rock());
+			rocks[i].InitRock(rockTexture);
 		}
 
-		gameStateStack.push_back(GameState::Starting);
+		PushGameState(GameState::Starting);
 	}
 
 	void Game::InitGameOveredState()
@@ -89,7 +91,7 @@ namespace ApplesGame
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
-			InitGameStartingState();
+			SwitchGameState(GameState::Starting);
 		}
 		switch (GetCurrentGameState())
 		{
@@ -122,7 +124,7 @@ namespace ApplesGame
 		gameStateTimer += deltaTime;
 		if (gameStateTimer >= RECORD_TABLE_RESTART_TIME)
 		{
-			InitGameStartingState();
+			SwitchGameState(GameState::Starting);
 		}
 	}
 
@@ -200,10 +202,6 @@ namespace ApplesGame
 
 	void Game::EndGamePlayingState()
 	{
-	}
-
-	void EndGamePlayingState()
-	{
 
 	}
 
@@ -212,7 +210,7 @@ namespace ApplesGame
 		gameStateTimer += deltaTime;
 		if (gameStateTimer >= BEFORE_SHOWING_RECORD_TABLE_TIME)
 		{
-			InitGameRecordTableState();
+			SwitchGameState(GameState::RecordTable);
 		}
 	}
 
@@ -237,6 +235,7 @@ namespace ApplesGame
 
 	void Game::ShutdownGame()
 	{
+
 	}
 
 	GameState Game::GetCurrentGameState()
@@ -325,12 +324,12 @@ namespace ApplesGame
 		}
 		case GameState::Playing:
 		{
-			InitGameStartingState();
+			InitGamePlayingState();
 			break;
 		}
 		case GameState::GameOvered:
 		{
-			InitGameStartingState();
+			InitGameOveredState();
 			break;
 		}
 		case GameState::RecordTable:
@@ -341,13 +340,9 @@ namespace ApplesGame
 		}
 	}
 
-	void InitGameStartingState()
-	{
-		
-	}
-
 	void Game::InitGameStartingState()
 	{
+
 	}
 
 	void Game::UpdateGameStartingState()
@@ -355,34 +350,28 @@ namespace ApplesGame
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
 		{
 			gameMode = GameModes::InfiniteApplesWithAcceleartion;
-			InitGamePlayingState();
+			SwitchGameState(GameState::Playing);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
 		{
 			gameMode = GameModes::InfinteApplesWithoutAcceleration;
-			InitGamePlayingState();
+			SwitchGameState(GameState::Playing);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
 		{
 			gameMode = GameModes::FiniteApllesWithAcceleration;
-			InitGamePlayingState();
+			SwitchGameState(GameState::Playing);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
 		{
 			gameMode = GameModes::FiniteApplesWithoutAcceleration;
-			InitGamePlayingState();
+			SwitchGameState(GameState::Playing);
 		}
 		
 	}
 
 	void Game::EndGameStartingState()
 	{
-	}
 
-	void EndGameStartingState(Game& game)
-	{
-
-	}
-
-	
+	}	
 }

@@ -10,7 +10,7 @@ namespace ApplesGame
 	{
 		Position2D position;
 		sf::Sprite sprite;
-	public:
+	public:		
 		void InitRock(const sf::Texture& rockTexture);
 		void Draw(sf::RenderWindow& window);
 

@@ -59,6 +59,14 @@ namespace ApplesGame
 		void Draw(sf::RenderWindow& window) const;
 	};
 
+	class EscapeDialogUI
+	{
+		sf::Text text;
+	public:
+		void Init(const sf::Font& font);
+		void Draw(sf::RenderWindow& window) const;
+	};
+
 	class UI
 	{
 		HintUI hintUI;
@@ -66,6 +74,7 @@ namespace ApplesGame
 		RecordTableUI recordTableUI;
 		CurrentScoreUI currentScoreUI;
 		GameModeSelectUI gameModeSelectUI;
+		EscapeDialogUI escapeMenuUI;
 
 	public:
 		//UI(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);

@@ -93,6 +93,12 @@ namespace ApplesGame
 		{
 			SwitchGameState(GameState::Starting);
 		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
+			PushGameState(GameState::EscapeDialog);
+		}
+
 		switch (GetCurrentGameState())
 		{
 		case GameState::Starting:
@@ -113,6 +119,8 @@ namespace ApplesGame
 		{
 			UpdateGameRecordTableState(deltaTime);
 		}
+		case GameState::EscapeDialog:
+			UpdateGameEscapeDialog();
 		default:
 			break;
 		}
@@ -129,6 +137,28 @@ namespace ApplesGame
 	}
 
 	void Game::EndGameRecordTableState()
+	{
+
+	}
+
+	void Game::InitGameEscapeDialog()
+	{
+
+	}
+
+	void Game::UpdateGameEscapeDialog()
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+		{
+			PushGameState(GameState::ShuttingDown);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+		{
+			PopGameState();
+		}		
+	}
+
+	void Game::EndGameEscapeDialog()
 	{
 
 	}
@@ -233,9 +263,16 @@ namespace ApplesGame
 		gameUI.Draw(window, GetCurrentGameState(), gameMode);
 	}
 
-	void Game::ShutdownGame()
+	bool Game::IsGameShuttingDown()
 	{
-
+		if (GetCurrentGameState() == GameState::ShuttingDown)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	GameState Game::GetCurrentGameState()
@@ -313,6 +350,10 @@ namespace ApplesGame
 			EndGameRecordTableState();
 			break;
 		}
+		case GameState::EscapeDialog:
+			EndGameEscapeDialog();
+			return;
+			break;
 		}
 
 		switch (newState)

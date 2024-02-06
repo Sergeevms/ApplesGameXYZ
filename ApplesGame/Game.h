@@ -19,7 +19,9 @@ namespace ApplesGame
 		Starting,
 		Playing,
 		GameOvered,
-		RecordTable
+		RecordTable,
+		EscapeDialog,
+		ShuttingDown
 	};
 
 	enum GameOptions
@@ -88,11 +90,15 @@ namespace ApplesGame
 		void UpdateGameRecordTableState(const float deltaTime);
 		void EndGameRecordTableState();
 
+		void InitGameEscapeDialog();
+		void UpdateGameEscapeDialog();
+		void EndGameEscapeDialog();
+
 	public:
 		void Init();
 		void Update(const float deltaTime);
 		void Draw(sf::RenderWindow& window);
-		void ShutdownGame();
+		bool IsGameShuttingDown();
 
 		GameState GetCurrentGameState();
 	};

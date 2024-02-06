@@ -168,6 +168,7 @@ namespace ApplesGame
 		currentScoreUI.Init(font);
 		gameModeSelectUI.Init(font);
 		recordTableUI.Init(font, playerNamesInputStream, finiteApplesCount);
+		escapeMenuUI.Init(font);
 	}
 
 	void UI::Update(GameState gameState, int currentScore, const float time)
@@ -223,6 +224,24 @@ namespace ApplesGame
 			recordTableUI.Draw(window, gameMode);
 			break;
 		}
+		case GameState::EscapeDialog:
+		{
+			escapeMenuUI.Draw(window);
 		}
+		}
+	}
+	void EscapeDialogUI::Init(const sf::Font& font)
+	{
+		text.setFont(font);
+		text.setCharacterSize(30);
+		text.setString("Want to quit game?\n\
+Press Y to quit, N or ESC to return");
+		text.setPosition(SCREEN_WIDTH / 2.f - text.getGlobalBounds().width / 2.f,
+			SCREEN_HEIGHT / 2.f - text.getGlobalBounds().height / 2.f);
+	}
+
+	void EscapeDialogUI::Draw(sf::RenderWindow& window) const
+	{
+		window.draw(text);
 	}
 }

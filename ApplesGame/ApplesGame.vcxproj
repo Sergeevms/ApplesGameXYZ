@@ -162,6 +162,7 @@
     <ClCompile Include="AppleColiderGrid.cpp" />
     <ClCompile Include="ApplesMassive.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="ApplesMassive.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameLoop.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RecordTable.h" />

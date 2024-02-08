@@ -6,6 +6,7 @@
 #include "Math.h"
 #include "Player.h"
 #include "RecordTable.h"
+#include "Utility.h"
 
 
 namespace ApplesGame
@@ -89,15 +90,23 @@ namespace ApplesGame
 
 	void Game::Update(const float deltaTime)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		if (KeyPressed <sf::Keyboard::Space>() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			SwitchGameState(GameState::Starting);
+		}
+		if (KeyPressed <sf::Keyboard::Escape>() && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
+			PushGameState(GameState::EscapeDialog);
+		}
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
-			PushGameState(GameState::EscapeDialog);
-		}
+
+		}*/
 
 		switch (GetCurrentGameState())
 		{
@@ -152,7 +161,7 @@ namespace ApplesGame
 		{
 			PushGameState(GameState::ShuttingDown);
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
 			PopGameState();
 		}		

@@ -46,7 +46,7 @@ namespace ApplesGame
 		Rectangle windowRectangle;
 		Rectangle noRocksRectangle;
 		AppleColliderGrid appleCollderGrid;
-
+		
 		// Global game data;
 		std::vector<GameState> gameStateStack;
 		GameModes gameMode;

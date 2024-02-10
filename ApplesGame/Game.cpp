@@ -90,11 +90,13 @@ namespace ApplesGame
 
 	void Game::Update(const float deltaTime)
 	{
-		if (KeyPressed <sf::Keyboard::Space>() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		GameState currentGameState = GetCurrentGameState();
+
+		if (KeyPressed <sf::Keyboard::Space>())
 		{
 			SwitchGameState(GameState::Starting);
 		}
-		if (KeyPressed <sf::Keyboard::Escape>() && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		if (currentGameState != GameState::EscapeDialog && KeyPressed <sf::Keyboard::Escape>())
 		{
 			PushGameState(GameState::EscapeDialog);
 		}
@@ -108,7 +110,7 @@ namespace ApplesGame
 
 		}*/
 
-		switch (GetCurrentGameState())
+		switch (currentGameState)
 		{
 		case GameState::Starting:
 		{
@@ -161,7 +163,7 @@ namespace ApplesGame
 		{
 			PushGameState(GameState::ShuttingDown);
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || KeyPressed<sf::Keyboard::Escape>())
 		{
 			PopGameState();
 		}		
@@ -260,7 +262,7 @@ namespace ApplesGame
 
 	void Game::Draw(sf::RenderWindow& window)
 	{
-		if (GetCurrentGameState() != GameState::Starting)
+		if (GetCurrentGameState() == GameState::Playing)
 		{
 			player.Draw(window);
 			apples.DrawApples(window);

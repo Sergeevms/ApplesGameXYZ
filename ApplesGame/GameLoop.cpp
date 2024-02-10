@@ -24,7 +24,7 @@ void ApplesGame::GameLoop::Run()
 	sf::Clock gameClock;
 	float lastTime = gameClock.getElapsedTime().asSeconds();
 
-	while (!game->IsGameShuttingDown() && window->isOpen())
+	while (window->isOpen())
 	{
 
 		sf::sleep(sf::milliseconds(15));
@@ -42,6 +42,10 @@ void ApplesGame::GameLoop::Run()
 				window->close();
 				break;
 			}
+		}
+		if (game->IsGameShuttingDown())
+		{
+			window->close();
 		}
 
 		game->Update(deltaTime);

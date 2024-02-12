@@ -7,7 +7,7 @@
 
 namespace ApplesGame
 {
-	void HintUI::Init(const sf::Font& font)
+	void HintUI::Start(const sf::Font& font)
 	{
 		text.setFont(font);
 		text.setPosition(0.f, 0.f);
@@ -33,7 +33,7 @@ namespace ApplesGame
 		}
 	}
 
-	void GameOverUI::Init(const sf::Font& font)
+	void GameOverUI::Start(const sf::Font& font)
 	{
 		baseText.setFont(font);
 		baseText.setCharacterSize(40);
@@ -49,9 +49,9 @@ namespace ApplesGame
 		window.draw(scoreText);
 	}
 
-	void GameOverUI::UpdateTextByGameResult(bool gameWinned, int score)
+	void GameOverUI::UpdateTextByGameResult(bool isGameWinned, int score)
 	{
-		if (gameWinned)
+		if (isGameWinned)
 		{
 			baseText.setString("YOU WIN");
 			baseText.setFillColor(sf::Color::Cyan);
@@ -70,7 +70,7 @@ namespace ApplesGame
 			SCREEN_HEIGHT / 2.f - baseText.getGlobalBounds().height / 2.f - scoreText.getGlobalBounds().height);
 	}
 
-	void RecordTableUI::Init(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount)
+	void RecordTableUI::Start(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount)
 	{
 		timeText.setFont(font);
 		timeText.setCharacterSize(15);
@@ -97,11 +97,11 @@ namespace ApplesGame
 
 	}
 
-	void RecordTableUI::Draw(sf::RenderWindow& window, GameModes gameMode) const
+	void RecordTableUI::Draw(sf::RenderWindow& window, GameModes currentGameMode) const
 	{		
 		window.draw(timeText);
 		window.draw(headerText);
-		recordTables[gameMode].Draw(window);
+		recordTables[currentGameMode].Draw(window);
 	}
 
 	void RecordTableUI::UpdateText(float timeSinceStateStarted)
@@ -112,12 +112,12 @@ namespace ApplesGame
 		timeText.setPosition(SCREEN_WIDTH / 2.f - timeText.getGlobalBounds().width / 2.f, SCREEN_HEIGHT - timeText.getGlobalBounds().height * 2);
 	}
 
-	void RecordTableUI::UpdatePlayerScore(GameModes gameMode, int newPlayerScore)
+	void RecordTableUI::UpdatePlayerScore(GameModes currentGameMode, int newPlayerScore)
 	{
-		recordTables[gameMode].UpdatePlayerScore(newPlayerScore);
+		recordTables[currentGameMode].UpdatePlayerScore(newPlayerScore);
 	}
 
-	void CurrentScoreUI::Init(const sf::Font& font)
+	void CurrentScoreUI::Start(const sf::Font& font)
 	{
 		text.setFont(font);
 		text.setFillColor(sf::Color::Green);
@@ -135,7 +135,7 @@ namespace ApplesGame
 		text.setPosition(SCREEN_WIDTH - text.getGlobalBounds().width, 0);
 	}
 
-	void GameModeSelectUI::Init(const sf::Font& font)
+	void GameModeSelectUI::Start(const sf::Font& font)
 	{
 		text.setFont(font);
 		text.setCharacterSize(30);
@@ -161,14 +161,14 @@ namespace ApplesGame
 		
 	}*/
 
-	void UI::Init(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount)
+	void UI::Start(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount)
 	{
-		hintUI.Init(font);
-		gameOverUI.Init(font);
-		currentScoreUI.Init(font);
-		gameModeSelectUI.Init(font);
-		recordTableUI.Init(font, playerNamesInputStream, finiteApplesCount);
-		escapeMenuUI.Init(font);
+		hintUI.Start(font);
+		gameOverUI.Start(font);
+		currentScoreUI.Start(font);
+		gameModeSelectUI.Start(font);
+		recordTableUI.Start(font, playerNamesInputStream, finiteApplesCount);
+		escapeMenuUI.Start(font);
 	}
 
 	void UI::Update(GameState gameState, int currentScore, const float time)
@@ -186,7 +186,7 @@ namespace ApplesGame
 		}
 	}
 
-	void UI::UpdateStateChanged(GameState gameState, GameModes gameMode, const int score, bool gameIsWinned)
+	void UI::UpdateStateChanged(GameState gameState, GameModes currentGameMode, const int score, bool gameIsWinned)
 	{
 		hintUI.SetState(gameState);
 		switch (gameState)
@@ -198,13 +198,13 @@ namespace ApplesGame
 		}
 		case GameState::RecordTable:
 		{
-			recordTableUI.UpdatePlayerScore(gameMode, score);
+			recordTableUI.UpdatePlayerScore(currentGameMode, score);
 			break;
 		}
 		}
 	}
 
-	void UI::Draw(sf::RenderWindow& window, GameState gameState, GameModes  gameMode)
+	void UI::Draw(sf::RenderWindow& window, GameState gameState, GameModes  currentGameMode)
 	{
 		hintUI.Draw(window);
 		switch (gameState)
@@ -221,7 +221,7 @@ namespace ApplesGame
 		}
 		case GameState::RecordTable:
 		{
-			recordTableUI.Draw(window, gameMode);
+			recordTableUI.Draw(window, currentGameMode);
 			break;
 		}
 		case GameState::EscapeDialog:
@@ -230,7 +230,7 @@ namespace ApplesGame
 		}
 		}
 	}
-	void EscapeDialogUI::Init(const sf::Font& font)
+	void EscapeDialogUI::Start(const sf::Font& font)
 	{
 		text.setFont(font);
 		text.setCharacterSize(30);

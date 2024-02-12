@@ -7,7 +7,7 @@
 
 namespace ApplesGame
 {	
-	RecordTable::RecordTable(const std::vector<std::string>& playerNames, int recordTableSize, int maxScore, const sf::Font& textFont, short gameMode)
+	RecordTable::RecordTable(const std::vector<std::string>& playerNames, int recordTableSize, int maxScore, const sf::Font& textFont, short currentGameMode)
 	{
 		playerScoreIndex = RECORDS_TABLE_SIZE - 1;
 		recordTableData.reserve(RECORDS_TABLE_SIZE);
@@ -25,7 +25,7 @@ namespace ApplesGame
 		recordTableData.push_back(RecordTableRow(0, "Player"));
 
 		std::string headerText{ "Record table of " };
-		switch (gameMode)
+		switch (currentGameMode)
 		{
 		case GameModes::FiniteApllesWithAcceleration:
 			headerText.append("finite apples with acceleration");

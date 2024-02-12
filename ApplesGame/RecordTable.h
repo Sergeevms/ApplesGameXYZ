@@ -19,7 +19,7 @@ namespace ApplesGame
 		sf::Text header;
 		void UpdateRowTextAndPlayerIndex(int i);
 	public:
-		RecordTable(const std::vector<std::string>& playerNames, int recordTableSize, int maxScore, const sf::Font& textFont, short gameMode);
+		RecordTable(const std::vector<std::string>& playerNames, int recordTableSize, int maxScore, const sf::Font& textFont, short currentGameMode);
 		void UpdatePlayerScore(int playerScore);
 		void Draw(sf::RenderWindow&) const;
 	};

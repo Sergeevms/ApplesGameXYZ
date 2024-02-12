@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <vector>
+#include <queue>
 #include "Player.h"
 #include "ApplesMassive.h"
 #include "Rock.h"
@@ -10,20 +11,10 @@
 #include "Constants.h"
 #include "RecordTable.h"
 #include "AppleColiderGrid.h"
+#include "GameStateBase.h"
 
 namespace ApplesGame
 {
-	enum class GameState
-	{
-		None = 0,
-		Starting,
-		Playing,
-		GameOvered,
-		RecordTable,
-		EscapeDialog,
-		ShuttingDown
-	};
-
 	enum GameOptions
 	{
 		InfiniteApples = 1,
@@ -38,35 +29,27 @@ namespace ApplesGame
 		InfiniteApplesWithAcceleartion = GameOptions::InfiniteApples | GameOptions::WithAcceleration
 	};
 
-	class Game
+	enum class GameStateChangeType
 	{
-		Player player;
-		ApplesMassive apples;
-		std::vector<Rock> rocks;
-		Rectangle windowRectangle;
-		Rectangle noRocksRectangle;
-		AppleColliderGrid appleCollderGrid;
-		
+		Switch,
+		Push,
+		Pop
+	};
+
+	using StateMachineSwitch = std::pair<GameStateChangeType, GameState>;
+
+	class Game
+	{		
 		// Global game data;
-		std::vector<GameState> gameStateStack;
-		GameModes gameMode;
-		bool gameWinned;
+		std::vector<GameState *> gameStateStack;
+		std::queue<StateMachineSwitch> gameStateSwitchQueue;
+		bool isGameWinned;
+		UI gameUI;
 		int finiteApplesCount; //fixed apples count for finite apple game modes
 		int numEatenApples;
-		float gameStateTimer;
-		UI gameUI;
 
 		// Resources
 		sf::Font font;
-		sf::Texture playerTexture;
-		sf::Texture appleTexture;
-		sf::Texture rockTexture;
-
-		sf::SoundBuffer appleEatenSoundBuffer;
-		sf::SoundBuffer playerDeathSoundBuffer;
-
-		sf::Sound appleEatenSound;
-		sf::Sound playerDeathSound;
 
 
 		void PushGameState(GameState state);
@@ -77,10 +60,6 @@ namespace ApplesGame
 		void InitGameStartingState();
 		void UpdateGameStartingState();
 		void EndGameStartingState();
-
-		void InitGamePlayingState();
-		void UpdateGamePlayingState(const float deltaTime);
-		void EndGamePlayingState();
 
 		void InitGameOveredState();
 		void UpdateGameOveredState(const float deltaTime);
@@ -99,6 +78,9 @@ namespace ApplesGame
 		void Update(const float deltaTime);
 		void Draw(sf::RenderWindow& window);
 		bool IsGameShuttingDown();
+		void TryToAddGameStateSwitchToQueue(StateMachineSwitch&&);
+		void SetGameWinnedState(bool currentGameWinned);
+		void SetCurrentGameApplesEaten(int applesEaten);
 
 		GameState GetCurrentGameState();
 	};

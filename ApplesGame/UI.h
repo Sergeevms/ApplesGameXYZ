@@ -14,7 +14,7 @@ namespace ApplesGame
 		bool isPlayingState;
 		sf::Text text;
 	public:
-		void Init(const sf::Font& font);
+		void Start(const sf::Font& font);
 		void Draw(sf::RenderWindow& window) const;
 		void SetState(GameState gameState);
 	};
@@ -25,9 +25,9 @@ namespace ApplesGame
 		sf::Text baseText;
 		sf::Text scoreText;
 	public:
-		void Init(const sf::Font& font);
+		void Start(const sf::Font& font);
 		void Draw(sf::RenderWindow& window) const;
-		void UpdateTextByGameResult(bool gameWinned, int score);
+		void UpdateTextByGameResult(bool isGameWinned, int score);
 	};
 
 	class RecordTableUI
@@ -36,26 +36,19 @@ namespace ApplesGame
 		sf::Text headerText;
 		std::vector<RecordTable> recordTables{};
 	public:				
-		void Init(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);
-		void Draw(sf::RenderWindow& window, GameModes gameMode) const;
+		void Start(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);
+		void Draw(sf::RenderWindow& window, GameModes currentGameMode) const;
 		void UpdateText(float timeSinceStateStarted);
-		void UpdatePlayerScore(GameModes gameMode, int newPlayerScore);
+		void UpdatePlayerScore(GameModes currentGameMode, int newPlayerScore);
 	};
 
-	class CurrentScoreUI
-	{
-		sf::Text text;
-	public:
-		void Init(const sf::Font& font);
-		void Draw(sf::RenderWindow& window) const;
-		void UpdatePlayerScore(int newPlayerScore);
-	};
+	
 
 	class GameModeSelectUI
 	{
 		sf::Text text;
 	public:
-		void Init(const sf::Font& font);
+		void Start(const sf::Font& font);
 		void Draw(sf::RenderWindow& window) const;
 	};
 
@@ -63,7 +56,7 @@ namespace ApplesGame
 	{
 		sf::Text text;
 	public:
-		void Init(const sf::Font& font);
+		void Start(const sf::Font& font);
 		void Draw(sf::RenderWindow& window) const;
 	};
 
@@ -78,9 +71,9 @@ namespace ApplesGame
 
 	public:
 		//UI(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);
-		void Init(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);
+		void Start(const sf::Font& font, std::ifstream& playerNamesInputStream, int finiteApplesCount);
 		void Update(GameState gameState, int currentScore, const float time);
-		void UpdateStateChanged(GameState gameState, GameModes gameMode, const int score, bool gameIsWinned);
-		void Draw(sf::RenderWindow& window, GameState gameState, GameModes gameMode);
+		void UpdateStateChanged(GameState gameState, GameModes currentGameMode, const int score, bool gameIsWinned);
+		void Draw(sf::RenderWindow& window, GameState gameState, GameModes currentGameMode);
 	};	
 }

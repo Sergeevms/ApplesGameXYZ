@@ -5,6 +5,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Sources\GameStates">
+      <UniqueIdentifier>{84f4d418-08ea-4d2b-ad11-760a67a7428b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\UI">
+      <UniqueIdentifier>{13a7972b-8baa-4f49-bf2b-0de59533e236}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameMain.cpp">
@@ -43,6 +49,18 @@
     <ClCompile Include="Utility.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="GameStateBase.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayingState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRecordsTableState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayingStateUI.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -80,6 +98,18 @@
     </ClInclude>
     <ClInclude Include="Utility.h">
       <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateBase.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayingState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRecordsTableState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayingStateUI.h">
+      <Filter>Sources\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -166,6 +166,10 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GamePlayingState.cpp" />
+    <ClCompile Include="GamePlayingStateUI.cpp" />
+    <ClCompile Include="GameRecordsTableState.cpp" />
+    <ClCompile Include="GameStateBase.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RecordTable.cpp" />
@@ -180,6 +184,10 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameLoop.h" />
+    <ClInclude Include="GamePlayingState.h" />
+    <ClInclude Include="GamePlayingStateUI.h" />
+    <ClInclude Include="GameRecordsTableState.h" />
+    <ClInclude Include="GameStateBase.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RecordTable.h" />

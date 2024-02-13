@@ -61,6 +61,12 @@
     <ClCompile Include="GamePlayingStateUI.cpp">
       <Filter>Sources\UI</Filter>
     </ClCompile>
+    <ClCompile Include="GameStartingState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStartingStateUI.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -109,6 +115,12 @@
       <Filter>Sources\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="GamePlayingStateUI.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartingState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartingStateUI.h">
       <Filter>Sources\UI</Filter>
     </ClInclude>
   </ItemGroup>

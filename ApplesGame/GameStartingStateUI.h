@@ -2,13 +2,11 @@
 #include <SFML/Graphics.hpp>
 namespace ApplesGame
 {
-	class GamePlayingStateUI
+	class GameStartingStateUI
 	{
-		sf::Text hintText;
-		sf::Text currentScoreText;
+		sf::Text gameModeSelectText;
 	public:
 		void Init(sf::Font& textFont);
 		void Draw(sf::RenderWindow& window) const;
-		void UpdatePlayerScore(int newPlayerScore);
 	};
 }

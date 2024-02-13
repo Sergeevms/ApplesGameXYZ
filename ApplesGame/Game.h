@@ -47,6 +47,7 @@ namespace ApplesGame
 		UI gameUI;
 		int finiteApplesCount; //fixed apples count for finite apple game modes
 		int numEatenApples;
+		GameModes currentGameMode;
 
 		// Resources
 		sf::Font font;
@@ -56,10 +57,6 @@ namespace ApplesGame
 		void PopGameState();
 		void SwitchGameState(GameState newState);
 		void SwitchGameStateInternal(GameState oldState, GameState newState);
-
-		void InitGameStartingState();
-		void UpdateGameStartingState();
-		void EndGameStartingState();
 
 		void InitGameOveredState();
 		void UpdateGameOveredState(const float deltaTime);
@@ -81,6 +78,7 @@ namespace ApplesGame
 		void TryToAddGameStateSwitchToQueue(StateMachineSwitch&&);
 		void SetGameWinnedState(bool currentGameWinned);
 		void SetCurrentGameApplesEaten(int applesEaten);
+		void setCurrentGameMode(GameModes gameMode);
 
 		GameState GetCurrentGameState();
 	};

@@ -149,12 +149,6 @@ namespace ApplesGame
 	{
 		if (GetCurrentGameState() == GameState::Playing)
 		{
-			player.Draw(window);
-			apples.DrawApples(window);
-			for (auto& rock : rocks)
-			{
-				rock.Draw(window);
-			}
 		}
 		gameUI.Draw(window, GetCurrentGameState(), currentGameMode);
 	}
@@ -187,6 +181,11 @@ namespace ApplesGame
 	void Game::SetCurrentGameApplesEaten(int applesEaten)
 	{
 		numEatenApples = applesEaten;
+	}
+
+	void Game::setCurrentGameMode(GameModes newGameMode)
+	{
+		currentnewGameMode = newGameMode;
 	}
 
 	GameState Game::GetCurrentGameState()
@@ -302,26 +301,6 @@ namespace ApplesGame
 
 	void Game::UpdateGameStartingState()
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
-		{
-			currentGameMode = GameModes::InfiniteApplesWithAcceleartion;
-			SwitchGameState(GameState::Playing);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-		{
-			currentGameMode = GameModes::InfinteApplesWithoutAcceleration;
-			SwitchGameState(GameState::Playing);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
-		{
-			currentGameMode = GameModes::FiniteApllesWithAcceleration;
-			SwitchGameState(GameState::Playing);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-		{
-			currentGameMode = GameModes::FiniteApplesWithoutAcceleration;
-			SwitchGameState(GameState::Playing);
-		}
 		
 	}
 

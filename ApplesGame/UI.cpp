@@ -9,10 +9,7 @@ namespace ApplesGame
 {
 	void HintUI::Start(const sf::Font& font)
 	{
-		text.setFont(font);
-		text.setPosition(0.f, 0.f);
-		text.setFillColor(sf::Color::White);
-		text.setCharacterSize(15);
+		
 	}
 
 	void HintUI::Draw(sf::RenderWindow& window) const
@@ -119,9 +116,6 @@ namespace ApplesGame
 
 	void CurrentScoreUI::Start(const sf::Font& font)
 	{
-		text.setFont(font);
-		text.setFillColor(sf::Color::Green);
-		text.setCharacterSize(20);
 	}
 
 	void CurrentScoreUI::Draw(sf::RenderWindow& window) const
@@ -131,23 +125,10 @@ namespace ApplesGame
 
 	void CurrentScoreUI::UpdatePlayerScore(int currentScore)
 	{
-		text.setString("Score : " + std::to_string(currentScore));
-		text.setPosition(SCREEN_WIDTH - text.getGlobalBounds().width, 0);
 	}
 
 	void GameModeSelectUI::Start(const sf::Font& font)
 	{
-		text.setFont(font);
-		text.setCharacterSize(30);
-		text.setFillColor(sf::Color::White);
-		text.setStyle(sf::Text::Italic);
-		text.setString({ "Press num key to choose game mode:\n\
-1. infinite apples with player acceleration;\n\
-2. infinite apples without player acceleration;\n\
-3. finite apples with player acceleration;\n\
-4. finite apples without player acceleration." });
-		text.setPosition(SCREEN_WIDTH / 2.f - text.getGlobalBounds().width / 2.f,
-			SCREEN_HEIGHT / 2.f - text.getGlobalBounds().height / 2.f);
 	}
 
 	void GameModeSelectUI::Draw(sf::RenderWindow& window) const

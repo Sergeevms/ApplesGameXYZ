@@ -10,6 +10,7 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 	assert(rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png"));
 	assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
 	assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
+	assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
 
 	//Set size for apple collider grid
 	appleCollderGrid.SetGridSize(APPLES_COLLIDER_GRID_HEIGHT, APPLES_COLLIDER_GRID_WIDTH);
@@ -18,6 +19,8 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 	appleEatenSound.setBuffer(appleEatenSoundBuffer);
 	windowRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {SCREEN_WIDTH, SCREEN_HEIGHT} };
 	noRocksRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {PLAYER_SIZE * NO_ROCKS_ZONE, PLAYER_SIZE * NO_ROCKS_ZONE} };
+
+	stateUI.Init(textFont);
 
 	player.Init(playerTexture);
 
@@ -45,6 +48,7 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 		while (rock.TryToSetRockPosition(noRocksRectangle, GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT)));
 	}
 	numEatenApples = 0;
+	stateUI.UpdatePlayerScore(numEatenApples);
 	gameStateTimer = 0;
 }
 
@@ -80,7 +84,7 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 		if (DoShapesCollide(apples[*appleID].GetCollider(), player.GetCollider()) && !apples.IsAppleEaten(*appleID))
 		{
 			appleCollderGrid.EraseApple(apples[*appleID], *appleID);
-			++numEatenApples;
+			stateUI.UpdatePlayerScore(++numEatenApples);
 			appleEatenSound.play();
 			if (currentGameMode & GameOptions::WithAcceleration)
 			{
@@ -117,6 +121,18 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 			game->TryToAddGameStateSwitchToQueue(StateMachineSwitch{ GameStateChangeType::Switch, GameState::GameOvered });
 		}
 	}
+}
+
+void ApplesGame::GamePlayingState::Draw(sf::RenderWindow& window)
+{
+	stateUI.Draw(window);
+	player.Draw(window);
+	apples.DrawApples(window);
+	for (auto& rock : rocks)
+	{
+		rock.Draw(window);
+	}
+
 }
 
 void ApplesGame::GamePlayingState::End()

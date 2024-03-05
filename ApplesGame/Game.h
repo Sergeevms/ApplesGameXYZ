@@ -42,6 +42,12 @@ namespace ApplesGame
 		bool isShuttingDown{ false };
 		int finiteApplesCount; //fixed apples count for finite apple game modes
 		int numEatenApples{ 0 };
+		sf::SoundBuffer appleEatenSoundBuffer;
+		sf::SoundBuffer playerDeathSoundBuffer;
+
+		sf::Sound appleEatenSound;
+		sf::Sound playerDeathSound;
+
 		std::unordered_map<GameModes, std::unordered_map<std::string, int>> recordTableData;
 		GameModes currentGameMode{ GameModes::FiniteApllesWithAcceleration };
 

@@ -10,7 +10,7 @@ namespace ApplesGame
 	{
 		bool fromMainMenu;
 		sf::Text hintText;
-		sf::Text headerText;
+		std::vector<sf::Text> headerTexts;
 		sf::Text mainMenuTimerText;
 		std::unordered_map<GameModes, std::vector<sf::Text>> orderedTexts;
 	public:

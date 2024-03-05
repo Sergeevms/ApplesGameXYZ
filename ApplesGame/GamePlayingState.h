@@ -20,11 +20,8 @@ namespace ApplesGame
 
         sf::Font textFont;
 
-        sf::SoundBuffer appleEatenSoundBuffer;
-        sf::SoundBuffer playerDeathSoundBuffer;
-
-        sf::Sound appleEatenSound;
-        sf::Sound playerDeathSound;
+        sf::Sound * appleEatenSound;
+        sf::Sound * playerDeathSound;
 
         GamePlayingStateUI stateUI;
         Player player;
@@ -41,7 +38,7 @@ namespace ApplesGame
         void EndGame(bool isWinned = false);
 
     public:
-        GamePlayingState(Game* currentGame, int finiteApplesCount);
+        GamePlayingState(Game* currentGame, int finiteApplesCount, sf::Sound * appleEatenSound, sf::Sound * playerDeathSound);
         GameState GetGameState() const override { return GameState::Playing; };
         void Update(const float deltaTime) override;
         void Draw(sf::RenderWindow& window);

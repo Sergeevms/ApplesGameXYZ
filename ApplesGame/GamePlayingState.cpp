@@ -6,13 +6,12 @@
 #include "Utility.h"
 #include "Game.h"
 
-ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteApplesCount) : game(currentGame)
+ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteApplesCount, 
+	sf::Sound* eatenSound, sf::Sound* deathSound) : game(currentGame), appleEatenSound(eatenSound), playerDeathSound(deathSound)
 {
 	assert(playerTexture.loadFromFile(RESOURCES_PATH + "/Player.png"));
 	assert(appleTexture.loadFromFile(RESOURCES_PATH + "/Apple.png"));
 	assert(rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png"));
-	assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
-	assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
 	assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
 
 	currentGameMode = game->GetCurrentGameMode();
@@ -21,8 +20,6 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 	//Set size for apple collider grid
 	appleCollderGrid.SetGridSize(APPLES_COLLIDER_GRID_HEIGHT, APPLES_COLLIDER_GRID_WIDTH);
 
-	playerDeathSound.setBuffer(playerDeathSoundBuffer);
-	appleEatenSound.setBuffer(appleEatenSoundBuffer);
 	windowRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {SCREEN_WIDTH, SCREEN_HEIGHT} };
 	noRocksRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {PLAYER_SIZE * NO_ROCKS_ZONE, PLAYER_SIZE * NO_ROCKS_ZONE} };
 
@@ -92,7 +89,7 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 		{
 			appleCollderGrid.EraseApple(apples[*appleID], *appleID);
 			stateUI.UpdatePlayerScore(++numEatenApples);
-			appleEatenSound.play();
+			appleEatenSound->play();
 			if (currentGameMode & GameOptions::WithAcceleration)
 			{
 				player.SetSpeed(player.GetSpeed() + ACCELERATION);
@@ -148,6 +145,6 @@ void ApplesGame::GamePlayingState::EndGame(bool gameWinned)
 	game->SetGameApplesEaten(numEatenApples);
 	if (!gameWinned)
 	{
-		playerDeathSound.play();
+		playerDeathSound->play();
 	}
 }

@@ -18,7 +18,7 @@ namespace ApplesGame
             }
             else
             {
-                totalRect.width += itemRect.height + (item != texts.end() - 1) ? spacing : 0.f;
+                totalRect.width += itemRect.width + (item != texts.end() - 1) ? spacing : 0.f;
                 totalRect.height = std::max(totalRect.height, itemRect.height);
             }
         }

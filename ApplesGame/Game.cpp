@@ -20,7 +20,11 @@ namespace ApplesGame
 		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
 
 		//Get apples count for finite apple game modes
-		finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);		
+		finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);
+		assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
+		assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
+		playerDeathSound.setBuffer(playerDeathSoundBuffer);
+		appleEatenSound.setBuffer(appleEatenSoundBuffer);
 		
 		PushGameState(GameState::Starting, GameState::None);
 		InitRecordTablesData();
@@ -115,7 +119,7 @@ namespace ApplesGame
 		for (int i = 0; i < GAME_MODES_COUNT; ++i)
 		{
 			std::unordered_map<std::string, int> currentTable;
-			for (int j = 0; j < RECORDS_TABLE_SIZE; ++j)
+			for (int j = 0; j < RECORDS_TABLE_SIZE - 1; ++j)
 			{
 				int k;
 				do
@@ -144,7 +148,7 @@ namespace ApplesGame
 		}
 		case GameState::Playing:
 		{
-			gameState = new GamePlayingState(this, finiteApplesCount);
+			gameState = new GamePlayingState(this, finiteApplesCount, &appleEatenSound, &playerDeathSound);
 			break;
 		}
 		case GameState::Overed:

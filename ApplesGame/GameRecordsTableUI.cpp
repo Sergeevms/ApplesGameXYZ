@@ -29,7 +29,7 @@ void ApplesGame::GameRecordsTableUI::Init(const sf::Font& newFont, std::unordere
 	for (int i = 0; i < GAME_MODES_COUNT; ++i)
 	{
 		GameModes currentMode = GameModes(i);
-		std::map<int, std::string> orderedData;		
+		std::multimap<int, std::string> orderedData;		
 		std::unordered_map<std::string, int>& currentUnorderedMap = recordTableData[currentMode];
 
 		for (const auto& item : currentUnorderedMap)
@@ -51,14 +51,24 @@ void ApplesGame::GameRecordsTableUI::Init(const sf::Font& newFont, std::unordere
 			currentString.append(std::to_string(stringNumber + 1));
 			currentString.append(". ");
 			currentString.append((*item).second);
+			currentString.append(": ");
+			currentString.append(std::to_string((*item).first));
 			currentText.setString(currentString);
-		}
+		}		
 	}
 
-	headerText.setFont(newFont);
-	headerText.setCharacterSize(40);;
-	headerText.setFillColor(sf::Color::Green);
-	headerText.setStyle(sf::Text::Bold);
+	//Header for the table
+	headerTexts.reserve(3);
+	for (int i = 0; i < 3; ++i)
+	{
+		headerTexts.emplace_back(sf::Text());
+		headerTexts.back().setFont(newFont);
+		headerTexts.back().setCharacterSize(30);;
+		headerTexts.back().setFillColor(sf::Color::Green);
+		headerTexts.back().setStyle(sf::Text::Bold);
+	}
+	headerTexts[0].setString("Record table of");
+	headerTexts[2].setString("game mode:");
 }
 
 void ApplesGame::GameRecordsTableUI::Draw(sf::RenderWindow& window, GameModes selectedGameMode, float timeToMainMenu)
@@ -75,35 +85,34 @@ void ApplesGame::GameRecordsTableUI::Draw(sf::RenderWindow& window, GameModes se
 		window.draw(mainMenuTimerText);
 	}
 
+	switch (selectedGameMode)
+	{
+	case GameModes::FiniteApllesWithAcceleration:
+		headerTexts[1].setString("finite apples with acceleration");
+		break;
+	case GameModes::FiniteApplesWithoutAcceleration:
+		headerTexts[1].setString("finite apples without acceleration");
+		break;
+	case GameModes::InfiniteApplesWithAcceleartion:
+		headerTexts[1].setString("infinite apples with acceleration");
+		break;
+	case GameModes::InfinteApplesWithoutAcceleration:
+		headerTexts[1].setString("infinite apples without acceleration");
+		break;
+	}
+
 	std::vector<sf::Text*> texts;
-	texts.reserve(RECORDS_TABLE_SIZE);
 	std::vector<sf::Text> currentTexts = orderedTexts[selectedGameMode];
+	texts.reserve(headerTexts.size() + currentTexts.size());
+	for (auto& text : headerTexts)
+	{
+		texts.push_back(&text);
+	}
 	for (auto& text : currentTexts)
 	{
 		texts.push_back(&text);
 	}
 
-	std::string headerString{ "Record table of \n" };
-	switch (selectedGameMode)
-	{
-	case GameModes::FiniteApllesWithAcceleration:
-		headerString.append("finite apples with acceleration");
-		break;
-	case GameModes::FiniteApplesWithoutAcceleration:
-		headerString.append("finite apples without acceleration");
-		break;
-	case GameModes::InfiniteApplesWithAcceleartion:
-		headerString.append("infinite apples with acceleration");
-		break;
-	case GameModes::InfinteApplesWithoutAcceleration:
-		headerString.append("infinite apples without acceleration");
-		break;
-	}
-	headerString.append("\n game mode:");
-	headerText.setString(headerString);
-	headerText.setPosition(SCREEN_WIDTH / 2.f, 0);
-	SetOriginByRelative(headerText, RelativeOrigin{ 0.5f, 0.f });
-
-	DrawTexts(window, texts, Position2D{ SCREEN_WIDTH / 2.f, headerText.getGlobalBounds().height }, RelativeOrigin{ 0.5f, 0.f }, 
-		Alignment::Min, Orientation::Vertical, TEXT_SPACING);
+	DrawTexts(window, texts, Position2D{ SCREEN_WIDTH / 2.f, TEXT_SPACING}, RelativeOrigin{ 0.5f, 0.f }, 
+		Alignment::Middle, Orientation::Vertical, TEXT_SPACING);
 }

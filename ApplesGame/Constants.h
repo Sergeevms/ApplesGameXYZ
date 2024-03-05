@@ -30,4 +30,8 @@ namespace ApplesGame
 	const int APPLES_COLLIDER_GRID_HEIGHT = 12;
 
 	const int GAME_MODES_COUNT = 4;
+
+	const float TEXT_SPACING = 4.f;
+
+	const std::string PLAYER_NAME("Player");
 }

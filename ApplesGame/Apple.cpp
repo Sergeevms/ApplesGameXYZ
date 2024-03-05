@@ -9,7 +9,7 @@ namespace ApplesGame
 		applePosition = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 		sprite.setTexture(appleTexture);
 		SetSpriteSize(sprite, APPLE_SIZE, APPLE_SIZE);
-		SetSpriteOrigin(sprite, 0.5, 0.5);
+		SetOriginByRelative(sprite, RelativeOrigin{ 0.5f, 0.5f });
 	}
 
 	void Apple::DrawApple(sf::RenderWindow& window)

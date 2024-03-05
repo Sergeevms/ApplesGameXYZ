@@ -8,7 +8,7 @@ namespace ApplesGame
 	{
 		sprite.setTexture(playerTexture);
 		SetSpriteSize(sprite, PLAYER_SIZE, PLAYER_SIZE);
-		SetSpriteOrigin(sprite, 0.5f, 0.5f);
+		SetOriginByRelative(sprite, RelativeOrigin{ 0.5, 0.5 });
 	}
 
 	void Player::Draw(sf::RenderWindow& window)

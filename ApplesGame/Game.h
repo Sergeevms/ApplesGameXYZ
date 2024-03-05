@@ -3,14 +3,8 @@
 #include <SFML/Audio.hpp>
 #include <vector>
 #include <queue>
-#include "Player.h"
-#include "ApplesMassive.h"
-#include "Rock.h"
-#include "UI.h"
-#include "Math.h"
+#include <unordered_map>
 #include "Constants.h"
-#include "RecordTable.h"
-#include "AppleColiderGrid.h"
 #include "GameStateBase.h"
 
 namespace ApplesGame
@@ -33,7 +27,8 @@ namespace ApplesGame
 	{
 		Switch,
 		Push,
-		Pop
+		Pop,
+		ClearStackAndPush
 	};
 
 	using StateMachineSwitch = std::pair<GameStateChangeType, GameState>;
@@ -41,46 +36,37 @@ namespace ApplesGame
 	class Game
 	{		
 		// Global game data;
-		std::vector<GameState *> gameStateStack;
+		std::vector<GameStateBase *> gameStateStack;
 		std::queue<StateMachineSwitch> gameStateSwitchQueue;
-		bool isGameWinned;
-		UI gameUI;
+		bool isGameWinned{ false };
+		bool isShuttingDown{ false };
 		int finiteApplesCount; //fixed apples count for finite apple game modes
-		int numEatenApples;
-		GameModes currentGameMode;
+		int numEatenApples{ 0 };
+		std::unordered_map<GameModes, std::unordered_map<std::string, int>> recordTableData;
+		GameModes currentGameMode{ GameModes::FiniteApllesWithAcceleration };
 
 		// Resources
 		sf::Font font;
 
+		void InitRecordTablesData();
 
-		void PushGameState(GameState state);
+		void PushGameState(GameState newState, GameState previousState);
 		void PopGameState();
-		void SwitchGameState(GameState newState);
-		void SwitchGameStateInternal(GameState oldState, GameState newState);
-
-		void InitGameOveredState();
-		void UpdateGameOveredState(const float deltaTime);
-		void EndGameOveredState();
-
-		void InitGameRecordTableState();
-		void UpdateGameRecordTableState(const float deltaTime);
-		void EndGameRecordTableState();
-
-		void InitGameEscapeDialog();
-		void UpdateGameEscapeDialog();
-		void EndGameEscapeDialog();
-
+		void UpdateGameState();
 	public:
-		void Init();
+		Game();
+		~Game();
 		void Update(const float deltaTime);
 		void Draw(sf::RenderWindow& window);
-		bool IsGameShuttingDown();
-		void TryToAddGameStateSwitchToQueue(StateMachineSwitch&&);
-		void SetGameWinnedState(bool currentGameWinned);
-		void SetCurrentGameApplesEaten(int applesEaten);
 		void setCurrentGameMode(GameModes gameMode);
-
-		GameState GetCurrentGameState();
+		bool IsGameShuttingDown() const;
+		void AddGameStateSwitchIfQueueEmpty(StateMachineSwitch machineSwitch);
+		void SetGameWinnedState(bool currentGameWinned);
+		void SetGameApplesEaten(int applesEaten);
+		int GetGameApplesEaten() const;
+		bool GetIsGameWined() const;
+		GameModes GetCurrentGameMode() const;
+		GameStateBase* GetCurrentGameState();
 	};
 		
 }

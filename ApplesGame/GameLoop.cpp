@@ -4,7 +4,6 @@ ApplesGame::GameLoop::GameLoop()
 {
 	window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Apples games!");
 	game = new Game();
-	game->Init();
 }
 
 ApplesGame::GameLoop::~GameLoop()

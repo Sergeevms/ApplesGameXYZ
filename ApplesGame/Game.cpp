@@ -1,171 +1,64 @@
-#include "Game.h"
 #include <assert.h>
 #include <fstream>
 #include <list>
+#include "Game.h"
 #include "Constants.h"
 #include "Math.h"
 #include "Player.h"
-#include "RecordTable.h"
 #include "Utility.h"
+#include "ReturnToMenuDialogState.h"
+#include "GameStartingState.h"
+#include "GameRecordsTableState.h"
+#include "GamePlayingState.h"
+#include "GameOveredState.h"
 
 
 namespace ApplesGame
 {
-	void Game::Init()
+	Game::Game()
 	{
 		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
 
 		//Get apples count for finite apple game modes
 		finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);		
-
-		// Setup input stream for reading player names for record table
-		std::ifstream playerNamesInputStream(RESOURCES_PATH + "/recordTableNicknames.txt");
-
-		gameUI.Start(font, playerNamesInputStream, finiteApplesCount);
-
-		playerNamesInputStream.close();		
-
-		PushGameState(GameState::Starting);
+		
+		PushGameState(GameState::Starting, GameState::None);
+		InitRecordTablesData();
 	}
 
-	void Game::InitGameOveredState()
-	{		
-		if (!isGameWinned)
+	Game::~Game()
+	{
+		while (!gameStateStack.empty())
 		{
-			playerDeathSound.play();
+			GameStateBase* gameState = gameStateStack.back();
+			gameState->End();
+			delete gameState;
+			gameStateStack.pop_back();
 		}
-		gameStateTimer = 0.f;
-		gameUI.UpdateStateChanged(GetCurrentGameState(), currentGameMode, numEatenApples, isGameWinned);
-	}
-
-	void Game::InitGameRecordTableState()
-	{		
-		gameStateTimer = 0.f;
-		gameUI.UpdateStateChanged(GetCurrentGameState(), currentGameMode, numEatenApples, isGameWinned);
 	}
 
 	void Game::Update(const float deltaTime)
 	{
-		GameState currentGameState = GetCurrentGameState();
-
-		if (KeyPressed <sf::Keyboard::Space>())
-		{
-			SwitchGameState(GameState::Starting);
-		}
-		if (currentGameState != GameState::EscapeDialog && KeyPressed <sf::Keyboard::Escape>())
-		{
-			PushGameState(GameState::EscapeDialog);
-		}
-
-		switch (currentGameState)
-		{
-		case GameState::Starting:
-		{
-			UpdateGameStartingState();
-			break;
-		}
-		case GameState::Playing:
-		{
-			UpdateGamePlayingState(deltaTime);
-			break;
-		}
-		case GameState::GameOvered:
-		{
-			UpdateGameOveredState(deltaTime);
-		}
-		case GameState::RecordTable:
-		{
-			UpdateGameRecordTableState(deltaTime);
-		}
-		case GameState::EscapeDialog:
-			UpdateGameEscapeDialog();
-		default:
-			break;
-		}
-		gameUI.Update(GetCurrentGameState(), numEatenApples, deltaTime);
-	}
-
-	void Game::UpdateGameRecordTableState(const float deltaTime)
-	{
-		gameStateTimer += deltaTime;
-		if (gameStateTimer >= RECORD_TABLE_RESTART_TIME)
-		{
-			SwitchGameState(GameState::Starting);
-		}
-	}
-
-	void Game::EndGameRecordTableState()
-	{
-
-	}
-
-	void Game::InitGameEscapeDialog()
-	{
-
-	}
-
-	void Game::UpdateGameEscapeDialog()
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
-		{
-			PushGameState(GameState::ShuttingDown);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || KeyPressed<sf::Keyboard::Escape>())
-		{
-			PopGameState();
-		}		
-	}
-
-	void Game::EndGameEscapeDialog()
-	{
-
-	}
-
-	void Game::UpdateGamePlayingState(const float deltaTime)
-	{
-				
-	}
-
-	void Game::EndGamePlayingState()
-	{
-
-	}
-
-	void Game::UpdateGameOveredState(const float deltaTime)
-	{
-		gameStateTimer += deltaTime;
-		if (gameStateTimer >= BEFORE_SHOWING_RECORD_TABLE_TIME)
-		{
-			SwitchGameState(GameState::RecordTable);
-		}
-	}
-
-	void Game::EndGameOveredState()
-	{
-
+		GetCurrentGameState()->Update(deltaTime);
+		UpdateGameState();
 	}
 
 	void Game::Draw(sf::RenderWindow& window)
 	{
-		if (GetCurrentGameState() == GameState::Playing)
-		{
-		}
-		gameUI.Draw(window, GetCurrentGameState(), currentGameMode);
+		GetCurrentGameState()->Draw(window);
 	}
 
-	bool Game::IsGameShuttingDown()
+	void Game::setCurrentGameMode(GameModes gameMode)
 	{
-		if (GetCurrentGameState() == GameState::ShuttingDown)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		currentGameMode = gameMode;
 	}
 
-	void Game::TryToAddGameStateSwitchToQueue(StateMachineSwitch&& machineSwitch)
+	bool Game::IsGameShuttingDown() const
+	{
+		return isShuttingDown;
+	}
+
+	void Game::AddGameStateSwitchIfQueueEmpty(StateMachineSwitch machineSwitch)
 	{
 		if (gameStateSwitchQueue.empty())
 		{
@@ -178,134 +71,150 @@ namespace ApplesGame
 		isGameWinned = currentGameWinned;
 	}
 
-	void Game::SetCurrentGameApplesEaten(int applesEaten)
+	void Game::SetGameApplesEaten(int applesEaten)
 	{
 		numEatenApples = applesEaten;
+		recordTableData[currentGameMode][PLAYER_NAME] = std::max(recordTableData[currentGameMode][PLAYER_NAME], numEatenApples);
 	}
 
-	void Game::setCurrentGameMode(GameModes newGameMode)
+	int Game::GetGameApplesEaten() const
 	{
-		currentnewGameMode = newGameMode;
+		return numEatenApples;
 	}
 
-	GameState Game::GetCurrentGameState()
+	bool Game::GetIsGameWined() const
+	{
+		return isGameWinned;
+	}
+
+	GameModes Game::GetCurrentGameMode() const
+	{
+		return currentGameMode;
+	}
+
+	GameStateBase* Game::GetCurrentGameState()
 	{
 		return gameStateStack.back();
 	}
 
-	void Game::PushGameState(GameState state)
+	void Game::InitRecordTablesData()
 	{
-		GameState oldState = GameState::None;
+		recordTableData.reserve(GAME_MODES_COUNT);
+		// Setup input stream for reading player names for record table
+		std::ifstream playerNamesInputStream(RESOURCES_PATH + "/recordTableNicknames.txt");
+		std::vector<std::string> initialPlayerNames;
+		std::string currentPlayerName;
 
-		if (gameStateStack.size() > 0)
+		recordTableData.reserve(GAME_MODES_COUNT);
+
+		while (std::getline(playerNamesInputStream, currentPlayerName))
 		{
-			oldState = gameStateStack.back();
+			initialPlayerNames.push_back(currentPlayerName);
 		}
 
-		SwitchGameStateInternal(oldState, state);
-		gameStateStack.push_back(state);
+		for (int i = 0; i < GAME_MODES_COUNT; ++i)
+		{
+			std::unordered_map<std::string, int> currentTable;
+			for (int j = 0; j < RECORDS_TABLE_SIZE; ++j)
+			{
+				int k;
+				do
+				{
+					k = GetRandomIntInRange(0, (int) initialPlayerNames.size() - 1);
+				} while (currentTable.contains(initialPlayerNames[k]));
+				currentTable.emplace(initialPlayerNames[k], GetRandomIntInRange(0, 
+					(i & GameOptions::InfiniteApples) ? (int) (MAX_APPLES * RECORDS_TABLE_MAX_COEFFICIENT) : finiteApplesCount));
+			}
+			currentTable.emplace(PLAYER_NAME, 0);
+			recordTableData.emplace((GameModes)i, currentTable);
+		}
+		playerNamesInputStream.close();
 	}
 
-	void Game::PopGameState()
+	void Game::PushGameState(GameState newState, GameState previousState)
 	{
-		GameState oldState = GameState::None;
-		GameState state = GameState::None;
-		if (gameStateStack.size() > 0)
-		{
-			oldState = gameStateStack.back();			
-		}
-		gameStateStack.pop_back();
-
-		if (gameStateStack.size() > 0)
-		{
-			state = gameStateStack.back();
-		}		
-		SwitchGameStateInternal(oldState, state);
-	}
-
-	void Game::SwitchGameState(GameState newState)
-	{
-		if (gameStateStack.size() > 0)
-		{
-			GameState oldState = gameStateStack.back();
-			gameStateStack.pop_back();
-			gameStateStack.push_back(newState);
-			SwitchGameStateInternal(oldState, newState);
-		}
-		else
-		{
-			PushGameState(newState);
-		}
-		gameUI.UpdateStateChanged(GetCurrentGameState(), currentGameMode, numEatenApples, isGameWinned);
-	}
-
-	void Game::SwitchGameStateInternal(GameState oldState, GameState newState)
-	{
-		switch (oldState)
-		{
-		case GameState::Starting:
-		{
-			EndGameStartingState();
-			break;
-		}
-		case GameState::Playing:
-		{
-			EndGamePlayingState();
-			break;
-		}
-		case GameState::GameOvered:
-		{
-			EndGameOveredState();
-			break;
-		}
-		case GameState::RecordTable:
-		{
-			EndGameRecordTableState();
-			break;
-		}
-		case GameState::EscapeDialog:
-			EndGameEscapeDialog();
-			return;
-			break;
-		}
+		GameStateBase* gameState = nullptr;
 
 		switch (newState)
 		{
 		case GameState::Starting:
 		{
-			InitGameStartingState();
+			gameState = new GameStartingState(this);
 			break;
 		}
 		case GameState::Playing:
 		{
-			InitGamePlayingState();
+			gameState = new GamePlayingState(this, finiteApplesCount);
 			break;
 		}
-		case GameState::GameOvered:
+		case GameState::Overed:
 		{
-			InitGameOveredState();
+			gameState = new GameOveredState(this);
 			break;
 		}
 		case GameState::RecordTable:
 		{
-			InitGameRecordTableState();
+			bool fromMenu = previousState == GameState::Starting;
+			gameState = new GameRecordsTableState(this, recordTableData, currentGameMode, fromMenu);
 			break;
-		}		
+		}
+		case GameState::ReturnToMenuDialog:
+		{
+			gameState = new ReturnToMenuDialogState(this);
+			break;
+		}
+		}
+
+		gameStateStack.push_back(gameState);
+		gameState->Start();
+	}
+
+	void Game::PopGameState()
+	{
+		if (!gameStateStack.empty())
+		{
+			GameStateBase * currentGameState = gameStateStack.back();
+			currentGameState->End();
+			delete currentGameState;
+			gameStateStack.pop_back();
 		}
 	}
-
-	void Game::InitGameStartingState()
+	
+	void Game::UpdateGameState()
 	{
-
+		if (!gameStateSwitchQueue.empty())
+		{
+			StateMachineSwitch currentSwitch = gameStateSwitchQueue.front();
+			gameStateSwitchQueue.pop();
+			GameState previousGameState = GetCurrentGameState()->GetGameState();
+			switch (currentSwitch.first)
+			{
+			case GameStateChangeType::Pop:
+			{
+				PopGameState();
+				break;
+			}
+			case GameStateChangeType::Switch:
+			{
+				PopGameState();
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			case GameStateChangeType::Push:
+			{
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			case GameStateChangeType::ClearStackAndPush:
+			{
+				while (!gameStateStack.empty())
+				{
+					PopGameState();
+				}
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			}
+		}
 	}
-
-	void Game::UpdateGameStartingState()
-	{
-		
-	}
-
-	void Game::EndGameStartingState()
-	{
-
-	}	
 }

@@ -1,24 +1,22 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "GameStateBase.h"
-#include "GameStartingStateUI.h"
+#include "ReturnToMenuDialogStateUI.h"
 
 namespace ApplesGame
 {
     class Game;
 
-    class GameStartingState :
+    class ReturnToMenuDialogState :
         public GameStateBase
     {
         Game* game;
         sf::Font textFont;
-        GameStartingStateUI stateUI;
+        ReturnToMenuDialogStateUI stateUI;
     public:
-        GameStartingState(Game* currentGame);
+        ReturnToMenuDialogState(Game* currentGame);
         GameState GetGameState() const override { return GameState::Starting; };
         void Update(const float deltaTime) override;
-        void Draw(sf::RenderWindow& window);
-        ~GameStartingState() = default;
+        void Draw(sf::RenderWindow& window) override;
+        ~ReturnToMenuDialogState() = default;
     };
 }
-

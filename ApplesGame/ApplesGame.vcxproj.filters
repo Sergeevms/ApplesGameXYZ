@@ -28,16 +28,10 @@
     <ClCompile Include="Rock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="ApplesMassive.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RecordTable.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="AppleColiderGrid.cpp">
@@ -49,13 +43,7 @@
     <ClCompile Include="Utility.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="GameStateBase.cpp">
-      <Filter>Sources\GameStates</Filter>
-    </ClCompile>
     <ClCompile Include="GamePlayingState.cpp">
-      <Filter>Sources\GameStates</Filter>
-    </ClCompile>
-    <ClCompile Include="GameRecordsTableState.cpp">
       <Filter>Sources\GameStates</Filter>
     </ClCompile>
     <ClCompile Include="GamePlayingStateUI.cpp">
@@ -65,6 +53,24 @@
       <Filter>Sources\GameStates</Filter>
     </ClCompile>
     <ClCompile Include="GameStartingStateUI.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOveredState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOveredStateUI.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRecordsTableState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRecordsTableUI.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ReturnToMenuDialogState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="ReturnToMenuDialogStateUI.cpp">
       <Filter>Sources\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,16 +90,10 @@
     <ClInclude Include="Rock.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="ApplesMassive.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="RecordTable.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="AppleColiderGrid.h">
@@ -111,9 +111,6 @@
     <ClInclude Include="GamePlayingState.h">
       <Filter>Sources\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="GameRecordsTableState.h">
-      <Filter>Sources\GameStates</Filter>
-    </ClInclude>
     <ClInclude Include="GamePlayingStateUI.h">
       <Filter>Sources\UI</Filter>
     </ClInclude>
@@ -121,6 +118,24 @@
       <Filter>Sources\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="GameStartingStateUI.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOveredState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOveredStateUI.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRecordsTableState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRecordsTableUI.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnToMenuDialogState.h">
+      <Filter>Sources\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnToMenuDialogStateUI.h">
       <Filter>Sources\UI</Filter>
     </ClInclude>
   </ItemGroup>

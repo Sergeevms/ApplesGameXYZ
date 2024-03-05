@@ -1,9 +1,12 @@
 #include <assert.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "GamePlayingState.h"
 #include "Constants.h"
+#include "Utility.h"
 #include "Game.h"
 
-ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteApplesCount) : GameStateBase(GameState::Playing), game(currentGame)
+ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteApplesCount) : game(currentGame)
 {
 	assert(playerTexture.loadFromFile(RESOURCES_PATH + "/Player.png"));
 	assert(appleTexture.loadFromFile(RESOURCES_PATH + "/Apple.png"));
@@ -11,6 +14,9 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 	assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
 	assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
 	assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
+
+	currentGameMode = game->GetCurrentGameMode();
+	game->SetGameWinnedState(false);
 
 	//Set size for apple collider grid
 	appleCollderGrid.SetGridSize(APPLES_COLLIDER_GRID_HEIGHT, APPLES_COLLIDER_GRID_WIDTH);
@@ -52,12 +58,13 @@ ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteAppl
 	gameStateTimer = 0;
 }
 
-void ApplesGame::GamePlayingState ::Start()
-{
-}
-
 void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 {
+	if (KeyPressed<sf::Keyboard::Escape>())
+	{
+		game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Push, GameState::ReturnToMenuDialog });
+	}
+	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		player.SetDirection(PlayerDirection::Right);
@@ -100,8 +107,7 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 				apples.SetAppleEaten(*appleID);
 				if (numEatenApples == apples.ApplesCount())
 				{
-					game->SetGameWinnedState(true);
-					game->TryToAddGameStateSwitchToQueue(StateMachineSwitch{ GameStateChangeType::Switch, GameState::GameOvered });
+					EndGame(true);
 				}
 			}
 		}
@@ -110,15 +116,15 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 	//border collision check
 	if (IsNotCompletelyInRectangle(player.GetCollider(), windowRectangle))
 	{
-		game->TryToAddGameStateSwitchToQueue(StateMachineSwitch{ GameStateChangeType::Switch, GameState::GameOvered });
+		EndGame();
 	}
 
 	//rocks collision check
 	for (auto& rock : rocks)
 	{
-		if (DoShapesCollide(player.GetCollider(), rock.getCollider()))
+		if (DoShapesCollide(player.GetCollider(), rock.GetCollider()))
 		{
-			game->TryToAddGameStateSwitchToQueue(StateMachineSwitch{ GameStateChangeType::Switch, GameState::GameOvered });
+			EndGame();
 		}
 	}
 }
@@ -135,7 +141,13 @@ void ApplesGame::GamePlayingState::Draw(sf::RenderWindow& window)
 
 }
 
-void ApplesGame::GamePlayingState::End()
+void ApplesGame::GamePlayingState::EndGame(bool gameWinned)
 {
-
+	game->SetGameWinnedState(gameWinned);
+	game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Switch, GameState::Overed });
+	game->SetGameApplesEaten(numEatenApples);
+	if (!gameWinned)
+	{
+		playerDeathSound.play();
+	}
 }

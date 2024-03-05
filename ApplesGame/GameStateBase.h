@@ -1,28 +1,27 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
 namespace ApplesGame
 {
+	class sf::RenderWindow;
+
 	enum class GameState
 	{
 		None = 0,
 		Starting,
 		Playing,
-		GameOvered,
+		Overed,
 		RecordTable,
-		EscapeDialog,
-		ShuttingDown
+		ReturnToMenuDialog
 	};
 
 	class GameStateBase
 	{
-		GameState gameState;
-	public:
-		GameStateBase(GameState newGameState) : gameState{ newGameState } {};
-		GameState GetGameState() const;
-		virtual void Start() = 0;
+	public:		
+		virtual GameState GetGameState() const = 0;
+		virtual void Start() {};
 		virtual void Update(const float deltaTime) = 0;
-		virtual void End() = 0;
+		virtual void End() {};
 		virtual void Draw(sf::RenderWindow& window) = 0;
+		virtual ~GameStateBase() {};
 	};
 }

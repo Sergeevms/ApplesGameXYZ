@@ -7,7 +7,7 @@ void ApplesGame::GamePlayingStateUI::Init(sf::Font& textFont)
 	hintText.setPosition(0.f, 0.f);
 	hintText.setFillColor(sf::Color::White);
 	hintText.setCharacterSize(15);
-
+	hintText.setString("Press Esc to end game\nRight, Up, Left, Down arrow\nto change player direction");
 
 	currentScoreText.setFont(textFont);
 	currentScoreText.setFillColor(sf::Color::Green);

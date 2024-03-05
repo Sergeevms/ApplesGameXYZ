@@ -5,12 +5,21 @@
 
 namespace ApplesGame
 {
-	enum class TextAlignment
+	enum class Alignment
 	{
-		left,
-		center,
-		right
+		Min,
+		Middle,
+		Max
 	};
+
+	enum class Orientation
+	{
+		Vertical,
+		Horizontal
+	};
+
+	void DrawTexts(sf::RenderWindow& window, std::vector<sf::Text*> const& texts, Position2D position, RelativeOrigin relativeOrigin,
+		Alignment alignment, Orientation orientation, float spacing = 0);
 
 	template<sf::Keyboard::Key key> bool KeyPressed()
 	{
@@ -24,6 +33,4 @@ namespace ApplesGame
 			return sf::Keyboard::isKeyPressed(key) && wasPressed ? false : wasPressed = true;
 		}
 	};
-
-	void DrawText(std::vector<sf::Text*>& texts, Position2D leftUpCorner, TextAlignment alignment, Vector2D spacing, sf::RenderWindow& window);
 }

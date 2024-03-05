@@ -8,6 +8,9 @@
 
 namespace ApplesGame
 {
+    class Game;
+    enum GameModes;
+
     class GamePlayingState:
         public GameStateBase
     {
@@ -31,15 +34,17 @@ namespace ApplesGame
         Rectangle noRocksRectangle;
         AppleColliderGrid appleCollderGrid;
         GameModes currentGameMode;
-        Game* game = nullptr;
+        Game* game;
         int numEatenApples;
         float gameStateTimer;
 
+        void EndGame(bool isWinned = false);
+
     public:
         GamePlayingState(Game* currentGame, int finiteApplesCount);
-        void Start() override;
+        GameState GetGameState() const override { return GameState::Playing; };
         void Update(const float deltaTime) override;
         void Draw(sf::RenderWindow& window);
-        void End() override;
+        ~GamePlayingState() = default;
     };
 }

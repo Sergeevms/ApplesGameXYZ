@@ -73,6 +73,15 @@
     <ClCompile Include="ReturnToMenuDialogStateUI.cpp">
       <Filter>Sources\UI</Filter>
     </ClCompile>
+    <ClCompile Include="MenuNode.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMenu.cpp">
+      <Filter>Sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>Sources\GameStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -137,6 +146,15 @@
     </ClInclude>
     <ClInclude Include="ReturnToMenuDialogStateUI.h">
       <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuNode.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralMenu.h">
+      <Filter>Sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Sources\GameStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

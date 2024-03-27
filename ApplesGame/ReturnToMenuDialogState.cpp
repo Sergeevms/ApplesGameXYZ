@@ -17,7 +17,7 @@ namespace ApplesGame
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 		{
-			game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::ClearStackAndPush, GameState::Starting });
+			game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::ClearStackAndPush, GameState::MainMenu });
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || KeyPressed<sf::Keyboard::Escape>())
 		{

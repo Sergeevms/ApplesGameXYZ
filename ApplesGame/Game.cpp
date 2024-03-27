@@ -11,6 +11,7 @@
 #include "GameRecordsTableState.h"
 #include "GamePlayingState.h"
 #include "GameOveredState.h"
+#include "MainMenuState.h"
 
 
 namespace ApplesGame
@@ -26,7 +27,7 @@ namespace ApplesGame
 		playerDeathSound.setBuffer(playerDeathSoundBuffer);
 		appleEatenSound.setBuffer(appleEatenSoundBuffer);
 		
-		PushGameState(GameState::Starting, GameState::None);
+		PushGameState(GameState::MainMenu, GameState::None);
 		InitRecordTablesData();
 	}
 
@@ -60,6 +61,11 @@ namespace ApplesGame
 	bool Game::IsGameShuttingDown() const
 	{
 		return isShuttingDown;
+	}
+
+	void Game::Shutdown()
+	{
+		isShuttingDown = true;
 	}
 
 	void Game::AddGameStateSwitchIfQueueEmpty(StateMachineSwitch machineSwitch)
@@ -141,6 +147,11 @@ namespace ApplesGame
 
 		switch (newState)
 		{
+		case GameState::MainMenu:
+		{
+			gameState = new MainMenuState(this);
+			break;
+		}
 		case GameState::Starting:
 		{
 			gameState = new GameStartingState(this);
@@ -158,7 +169,7 @@ namespace ApplesGame
 		}
 		case GameState::RecordTable:
 		{
-			bool fromMenu = previousState == GameState::Starting;
+			bool fromMenu = previousState == GameState::MainMenu;
 			gameState = new GameRecordsTableState(this, recordTableData, currentGameMode, fromMenu);
 			break;
 		}

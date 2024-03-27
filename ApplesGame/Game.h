@@ -66,6 +66,7 @@ namespace ApplesGame
 		void Draw(sf::RenderWindow& window);
 		void setCurrentGameMode(GameModes gameMode);
 		bool IsGameShuttingDown() const;
+		void Shutdown();
 		void AddGameStateSwitchIfQueueEmpty(StateMachineSwitch machineSwitch);
 		void SetGameWinnedState(bool currentGameWinned);
 		void SetGameApplesEaten(int applesEaten);

@@ -11,11 +11,11 @@ void ApplesGame::GameRecordsTableUI::Init(const sf::Font& newFont, std::unordere
 	fromMainMenu = fromMenu;
 
 	hintText.setFont(newFont);
-	hintText.setCharacterSize(20);
+	hintText.setCharacterSize(15);
 	hintText.setPosition(sf::Vector2f{ 0.f, 0.f });
 	if (fromMenu)
 	{
-		hintText.setString("Press Esc to return\nTab or left/right arrow to show table for another mode");
+		hintText.setString("Press Esc to return\nTab or left/right arrow \nto show table \nfor another mode");
 	}
 	else
 	{
@@ -114,5 +114,5 @@ void ApplesGame::GameRecordsTableUI::Draw(sf::RenderWindow& window, GameModes se
 	}
 
 	DrawTexts(window, texts, Position2D{ SCREEN_WIDTH / 2.f, TEXT_SPACING}, RelativeOrigin{ 0.5f, 0.f }, 
-		Alignment::Middle, Orientation::Vertical, TEXT_SPACING);
+		Alignment::Middle, Orientation::Vertical, 10.f);
 }

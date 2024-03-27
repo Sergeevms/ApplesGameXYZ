@@ -14,11 +14,11 @@ namespace ApplesGame
             if (orientation == Orientation::Vertical)
             {
                 totalRect.width = std::max(totalRect.width, itemRect.width);
-                totalRect.height += itemRect.height + (item != texts.end() - 1) ? spacing : 0.f;
+                totalRect.height += itemRect.height + ((item != texts.end() - 1) ? spacing : 0.f);
             }
             else
             {
-                totalRect.width += itemRect.width + (item != texts.end() - 1) ? spacing : 0.f;
+                totalRect.width += itemRect.width + ((item != texts.end() - 1) ? spacing : 0.f);
                 totalRect.height = std::max(totalRect.height, itemRect.height);
             }
         }

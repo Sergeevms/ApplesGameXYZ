@@ -20,7 +20,11 @@ namespace ApplesGame
 		{
 			if (stateTimer >= RECORD_TABLE_RESTART_TIME)
 			{
-				game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Switch, GameState::Starting });				
+				game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Switch, GameState::MainMenu });				
+			}
+			if (KeyPressed <sf::Keyboard::Escape>())
+			{
+				game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Push, GameState::ReturnToMenuDialog });
 			}
 		}
 		else
@@ -33,10 +37,10 @@ namespace ApplesGame
 			{
 				selectedMode = GameModes((selectedMode - 1 + GAME_MODES_COUNT) % GAME_MODES_COUNT);
 			}
-		}
-		if (KeyPressed <sf::Keyboard::Escape>())
-		{
-			game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Push, GameState::ReturnToMenuDialog });
+			if (KeyPressed <sf::Keyboard::Escape>())
+			{
+				game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Pop, GameState::None });
+			}
 		}
 	}
 

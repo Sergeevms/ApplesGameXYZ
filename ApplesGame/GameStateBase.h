@@ -1,8 +1,7 @@
 #pragma once
 
 namespace ApplesGame
-{
-	class sf::RenderWindow;
+{	
 
 	enum class GameState
 	{
@@ -11,7 +10,8 @@ namespace ApplesGame
 		Playing,
 		Overed,
 		RecordTable,
-		ReturnToMenuDialog
+		ReturnToMenuDialog,
+		MainMenu
 	};
 
 	class GameStateBase

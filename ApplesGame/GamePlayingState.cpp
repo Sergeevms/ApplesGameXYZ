@@ -128,20 +128,19 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 
 void ApplesGame::GamePlayingState::Draw(sf::RenderWindow& window)
 {
-	stateUI.Draw(window);
 	player.Draw(window);
 	apples.DrawApples(window);
 	for (auto& rock : rocks)
 	{
 		rock.Draw(window);
 	}
-
+	stateUI.Draw(window);
 }
 
 void ApplesGame::GamePlayingState::EndGame(bool gameWinned)
 {
 	game->SetGameWinnedState(gameWinned);
-	game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Switch, GameState::Overed });
+	game->AddGameStateSwitchIfQueueEmpty(StateMachineSwitch{ GameStateChangeType::Push, GameState::Overed });
 	game->SetGameApplesEaten(numEatenApples);
 	if (!gameWinned)
 	{

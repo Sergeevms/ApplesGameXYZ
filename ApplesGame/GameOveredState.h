@@ -13,6 +13,7 @@ namespace ApplesGame
         Game* game;
         sf::Font textFont;
         GameOveredStateUI stateUI;
+        sf::RectangleShape background;
     public:
         GameOveredState(Game* currentGame);
         GameState GetGameState() const override { return GameState::Overed; };

@@ -27,7 +27,7 @@ namespace ApplesGame
 		textToDraw.push_back(&buttonToPressText);
 		
 		DrawTexts(window, textToDraw, Position2D{ SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f }, RelativeOrigin{ 0.5f, 0.5f },
-			Alignment::Middle, Orientation::Vertical, 10.f);
+			Alignment::Middle, Orientation::Vertical, true, 10.f);
 		
 	}
 }

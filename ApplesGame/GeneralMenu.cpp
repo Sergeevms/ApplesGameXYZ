@@ -47,6 +47,6 @@ namespace ApplesGame
 		}
 		window.draw(currentNode->headerText);
 		DrawTexts(window, menuTexts, Position2D{ headerBottom }, RelativeOrigin{ 0.5f, 0.f }, currentNode->subMenuAlignment,
-			currentNode->subMenuOrientation, currentNode->subMenuSpacing);
+			currentNode->subMenuOrientation, true, currentNode->subMenuSpacing);
 	}
 }

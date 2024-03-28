@@ -114,5 +114,5 @@ void ApplesGame::GameRecordsTableUI::Draw(sf::RenderWindow& window, GameModes se
 	}
 
 	DrawTexts(window, texts, Position2D{ SCREEN_WIDTH / 2.f, TEXT_SPACING}, RelativeOrigin{ 0.5f, 0.f }, 
-		Alignment::Middle, Orientation::Vertical, 10.f);
+		Alignment::Middle, Orientation::Vertical, true, 10.f);
 }

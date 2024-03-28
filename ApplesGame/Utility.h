@@ -19,7 +19,7 @@ namespace ApplesGame
 	};
 
 	void DrawTexts(sf::RenderWindow& window, std::vector<sf::Text*> const& texts, Position2D position, RelativeOrigin relativeOrigin,
-		Alignment alignment, Orientation orientation, float spacing = 0);
+		Alignment alignment, Orientation orientation, bool alignByMaxSize = true, float spacing = 0);
 
 	template<sf::Keyboard::Key key> bool KeyPressed()
 	{

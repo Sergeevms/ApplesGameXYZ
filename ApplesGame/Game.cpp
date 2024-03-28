@@ -50,6 +50,10 @@ namespace ApplesGame
 
 	void Game::Draw(sf::RenderWindow& window)
 	{
+		if (GetCurrentGameState()->GetGameState() == GameState::ReturnToMenuDialog || GetCurrentGameState()->GetGameState() == GameState::Overed)
+		{
+			(*(gameStateStack.end() - 2))->Draw(window);
+		}
 		GetCurrentGameState()->Draw(window);
 	}
 

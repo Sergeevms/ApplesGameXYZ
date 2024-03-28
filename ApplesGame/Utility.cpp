@@ -4,22 +4,37 @@ namespace ApplesGame
 {
 
     void DrawTexts(sf::RenderWindow& window, std::vector<sf::Text*> const & texts, Position2D position, RelativeOrigin relativeOrigin,
-        Alignment alignment, Orientation orientation, float spacing)
+        Alignment alignment, Orientation orientation, bool alignByMaxSize, float spacing)
     {
         sf::FloatRect totalRect;
+        float maxTextSize{ 0 };
 
         for (auto item = texts.begin(); item != texts.end(); ++item)
         {
             sf::FloatRect itemRect = (*item)->getGlobalBounds();
             if (orientation == Orientation::Vertical)
             {
+                maxTextSize = std::max(maxTextSize, itemRect.height);
                 totalRect.width = std::max(totalRect.width, itemRect.width);
                 totalRect.height += itemRect.height + ((item != texts.end() - 1) ? spacing : 0.f);
             }
             else
             {
+                maxTextSize = std::max(maxTextSize, itemRect.width);
                 totalRect.width += itemRect.width + ((item != texts.end() - 1) ? spacing : 0.f);
                 totalRect.height = std::max(totalRect.height, itemRect.height);
+            }
+        }
+
+        if (alignByMaxSize)
+        {
+            if (orientation == Orientation::Vertical)
+            {
+                totalRect.height = texts.size() * maxTextSize + (texts.size() - 1) * spacing;
+            }
+            else
+            {
+                totalRect.width = texts.size() * maxTextSize + (texts.size() - 1) * spacing;
             }
         }
 
@@ -51,11 +66,11 @@ namespace ApplesGame
 
             if (orientation == Orientation::Vertical)
             {
-                currentPosition.y += itemRect.height + spacing;
+                currentPosition.y += (alignByMaxSize ? maxTextSize : itemRect.height) + spacing;
             }
             else
             {
-                currentPosition.x += itemRect.width + spacing;
+                currentPosition.x += (alignByMaxSize ? maxTextSize : itemRect.width) + spacing;
             }
         }
     }

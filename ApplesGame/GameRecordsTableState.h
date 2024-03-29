@@ -1,10 +1,12 @@
 #pragma once
 #include "GameStateBase.h"
 #include "GameRecordsTableUI.h"
-#include "Game.h"
 
 namespace ApplesGame
 {
+	class Game;
+	enum GameModes;
+
 	class GameRecordsTableState :
 		public GameStateBase
 	{

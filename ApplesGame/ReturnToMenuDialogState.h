@@ -1,6 +1,5 @@
 #pragma once
 #include "GameStateBase.h"
-#include "ReturnToMenuDialogStateUI.h"
 #include "GeneralMenu.h"
 
 namespace ApplesGame
@@ -20,10 +19,8 @@ namespace ApplesGame
         public GameStateBase
     {
         Game* game;
-        //sf::Font textFont;
         PauseMenu menu;
         sf::RectangleShape background;
-        //ReturnToMenuDialogStateUI stateUI;
     public:
         ReturnToMenuDialogState(Game* currentGame);
         GameState GetGameState() const override { return GameState::ReturnToMenuDialog; };

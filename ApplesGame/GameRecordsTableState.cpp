@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameRecordsTableState.h"
 #include "Utility.h"
+#include "Game.h"
 
 namespace ApplesGame
 {
@@ -9,7 +10,13 @@ namespace ApplesGame
 		GameModes currentGameMode,	bool fromMenu) 
 		: selectedMode(currentGameMode), executedFromMenu(fromMenu), game(currentGame)
 	{
+#ifndef NDEBUG
 		assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Black.ttf"));
+#else
+		textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Black.ttf");
+#endif // !NDEBUG
+
+		
 		stateUI.Init(textFont, recordTableData, fromMenu);
 	}
 

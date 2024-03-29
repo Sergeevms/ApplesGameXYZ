@@ -12,8 +12,8 @@ namespace ApplesGame
 	const float ACCELERATION = 10.f;
 	const float PLAYER_SIZE = 20.f;
 
-	const int MIN_APPLES = 10;
-	const int MAX_APPLES = 25;
+	const int MIN_APPLES = 15;
+	const int MAX_APPLES = 30;
 	const float APPLE_SIZE = 20.f;
 
 	const float RECORD_TABLE_RESTART_TIME = 60.f;

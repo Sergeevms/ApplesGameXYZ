@@ -12,8 +12,6 @@ namespace ApplesGame
 		background.setFillColor(sf::Color(0, 0, 0, 128));
 		background.setPosition(0.f, 0.f);
 		background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
-		/*assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Black.ttf"));
-		stateUI.Init(textFont);*/
 	}
 
 	void ReturnToMenuDialogState::Update(const float deltaTime)
@@ -51,12 +49,17 @@ namespace ApplesGame
 	{
 		window.draw(background);
 		menu.Draw(window);
-		//stateUI.Draw(window);
 	}
 
 	PauseMenu::PauseMenu()
 	{
+#ifndef NDEBUG
 		assert(menuFont.loadFromFile(RESOURCES_PATH + "/Fonts/Roboto-Bold.ttf"));
+#else
+		menuFont.loadFromFile(RESOURCES_PATH + "/Fonts/Roboto-Bold.ttf");
+#endif // !NDEBUG
+
+		
 
 		initMenuNode(&root, menuFont, "PAUSE", "", Orientation::Horizontal, Alignment::Middle, 50.f);
 		initMenuNode(&continueGame, menuFont, "", "Continue");

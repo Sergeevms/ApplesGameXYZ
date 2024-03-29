@@ -11,7 +11,13 @@ namespace ApplesGame
 	GameOveredState::GameOveredState(Game* currentGame) :
 		game(currentGame)
 	{
+#ifndef NDEBUG
 		assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Black.ttf"));
+#else
+		textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Black.ttf");
+#endif // !NDEBUG
+
+		
 
 		stateUI.Init(textFont, game->GetIsGameWined(), game->GetGameApplesEaten());
 

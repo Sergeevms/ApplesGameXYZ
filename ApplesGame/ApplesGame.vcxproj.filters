@@ -49,12 +49,6 @@
     <ClCompile Include="GamePlayingStateUI.cpp">
       <Filter>Sources\UI</Filter>
     </ClCompile>
-    <ClCompile Include="GameStartingState.cpp">
-      <Filter>Sources\GameStates</Filter>
-    </ClCompile>
-    <ClCompile Include="GameStartingStateUI.cpp">
-      <Filter>Sources\UI</Filter>
-    </ClCompile>
     <ClCompile Include="GameOveredState.cpp">
       <Filter>Sources\GameStates</Filter>
     </ClCompile>
@@ -69,9 +63,6 @@
     </ClCompile>
     <ClCompile Include="ReturnToMenuDialogState.cpp">
       <Filter>Sources\GameStates</Filter>
-    </ClCompile>
-    <ClCompile Include="ReturnToMenuDialogStateUI.cpp">
-      <Filter>Sources\UI</Filter>
     </ClCompile>
     <ClCompile Include="MenuNode.cpp">
       <Filter>Sources\UI</Filter>
@@ -123,12 +114,6 @@
     <ClInclude Include="GamePlayingStateUI.h">
       <Filter>Sources\UI</Filter>
     </ClInclude>
-    <ClInclude Include="GameStartingState.h">
-      <Filter>Sources\GameStates</Filter>
-    </ClInclude>
-    <ClInclude Include="GameStartingStateUI.h">
-      <Filter>Sources\UI</Filter>
-    </ClInclude>
     <ClInclude Include="GameOveredState.h">
       <Filter>Sources\GameStates</Filter>
     </ClInclude>
@@ -143,9 +128,6 @@
     </ClInclude>
     <ClInclude Include="ReturnToMenuDialogState.h">
       <Filter>Sources\GameStates</Filter>
-    </ClInclude>
-    <ClInclude Include="ReturnToMenuDialogStateUI.h">
-      <Filter>Sources\UI</Filter>
     </ClInclude>
     <ClInclude Include="MenuNode.h">
       <Filter>Sources\UI</Filter>

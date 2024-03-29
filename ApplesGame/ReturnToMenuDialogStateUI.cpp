@@ -1,3 +1,5 @@
+#include <vector>
+#include "ReturnToMenuDialogState.h"
 #include "ReturnToMenuDialogStateUI.h"
 #include "Utility.h"
 #include "Constants.h"
@@ -19,7 +21,7 @@ namespace ApplesGame
 		hintText.setFillColor(sf::Color::White);
 		hintText.setCharacterSize(15);
 	}
-	void ReturnToMenuDialogStateUI::Draw(sf::RenderWindow& window)
+	void ReturnToMenuDialogStateUI::Draw(sf::RenderWindow& window) const
 	{
 		window.draw(hintText);
 		std::vector<sf::Text*> textToDraw;

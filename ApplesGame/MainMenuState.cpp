@@ -11,7 +11,14 @@ namespace ApplesGame
 
 	MainMenu::MainMenu()
 	{
+		//
+#ifdef NDEBUG
+		menuFont.loadFromFile(RESOURCES_PATH + "/Fonts/Roboto-Bold.ttf"); 
+#else 
 		assert(menuFont.loadFromFile(RESOURCES_PATH + "/Fonts/Roboto-Bold.ttf"));
+#endif // !NDEBUG
+
+		
 
 		initMenuNode(&root, menuFont, "Apples Game Menu", "");
 		initMenuNode(&play, menuFont, "", "Play");

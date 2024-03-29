@@ -7,7 +7,6 @@
 #include "Player.h"
 #include "Utility.h"
 #include "ReturnToMenuDialogState.h"
-#include "GameStartingState.h"
 #include "GameRecordsTableState.h"
 #include "GamePlayingState.h"
 #include "GameOveredState.h"
@@ -18,12 +17,18 @@ namespace ApplesGame
 {
 	Game::Game()
 	{
+#ifndef NDEBUG
 		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
+		assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
+		assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
+#else
+		font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf");
+		appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav");
+		playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav");		
+#endif // !NDEBGUG
 
 		//Get apples count for finite apple game modes
 		finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);
-		assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
-		assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
 		playerDeathSound.setBuffer(playerDeathSoundBuffer);
 		appleEatenSound.setBuffer(appleEatenSoundBuffer);
 		
@@ -36,7 +41,6 @@ namespace ApplesGame
 		while (!gameStateStack.empty())
 		{
 			GameStateBase* gameState = gameStateStack.back();
-			gameState->End();
 			delete gameState;
 			gameStateStack.pop_back();
 		}
@@ -156,11 +160,6 @@ namespace ApplesGame
 			gameState = new MainMenuState(this);
 			break;
 		}
-		case GameState::Starting:
-		{
-			gameState = new GameStartingState(this);
-			break;
-		}
 		case GameState::Playing:
 		{
 			gameState = new GamePlayingState(this, finiteApplesCount, &appleEatenSound, &playerDeathSound);
@@ -185,7 +184,6 @@ namespace ApplesGame
 		}
 
 		gameStateStack.push_back(gameState);
-		gameState->Start();
 	}
 
 	void Game::PopGameState()
@@ -193,7 +191,6 @@ namespace ApplesGame
 		if (!gameStateStack.empty())
 		{
 			GameStateBase * currentGameState = gameStateStack.back();
-			currentGameState->End();
 			delete currentGameState;
 			gameStateStack.pop_back();
 		}

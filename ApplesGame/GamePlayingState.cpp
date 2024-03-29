@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "GamePlayingState.h"
@@ -9,10 +10,19 @@
 ApplesGame::GamePlayingState::GamePlayingState(Game* currentGame, int finiteApplesCount, 
 	sf::Sound* eatenSound, sf::Sound* deathSound) : game(currentGame), appleEatenSound(eatenSound), playerDeathSound(deathSound)
 {
+#ifndef NDEBUG
 	assert(playerTexture.loadFromFile(RESOURCES_PATH + "/Player.png"));
 	assert(appleTexture.loadFromFile(RESOURCES_PATH + "/Apple.png"));
 	assert(rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png"));
 	assert(textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
+#else
+	playerTexture.loadFromFile(RESOURCES_PATH + "/Player.png");
+	appleTexture.loadFromFile(RESOURCES_PATH + "/Apple.png");
+	rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png");
+	textFont.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf");
+#endif // !NDEBUG
+
+	
 
 	currentGameMode = game->GetCurrentGameMode();
 	game->SetGameWinnedState(false);
@@ -82,7 +92,7 @@ void ApplesGame::GamePlayingState ::Update(const float deltaTime)
 	player.UpdatePosition(deltaTime);
 
 	//apple collision check
-	std::list<int> nearestApplesIDList = appleCollderGrid.GetNearestAppleIDsList(player);
+	std::unordered_set<int> nearestApplesIDList = appleCollderGrid.GetNearestAppleIDsList(player);
 	for (auto appleID = nearestApplesIDList.begin(); appleID != nearestApplesIDList.end(); ++appleID)
 	{
 		if (DoShapesCollide(apples[*appleID].GetCollider(), player.GetCollider()) && !apples.IsAppleEaten(*appleID))

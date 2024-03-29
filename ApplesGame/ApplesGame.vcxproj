@@ -172,15 +172,12 @@
     <ClCompile Include="GamePlayingStateUI.cpp" />
     <ClCompile Include="GameRecordsTableState.cpp" />
     <ClCompile Include="GameRecordsTableUI.cpp" />
-    <ClCompile Include="GameStartingState.cpp" />
-    <ClCompile Include="GameStartingStateUI.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="GeneralMenu.cpp" />
     <ClCompile Include="MenuNode.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ReturnToMenuDialogState.cpp" />
-    <ClCompile Include="ReturnToMenuDialogStateUI.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
@@ -197,8 +194,6 @@
     <ClInclude Include="GamePlayingStateUI.h" />
     <ClInclude Include="GameRecordsTableState.h" />
     <ClInclude Include="GameRecordsTableUI.h" />
-    <ClInclude Include="GameStartingState.h" />
-    <ClInclude Include="GameStartingStateUI.h" />
     <ClInclude Include="GameStateBase.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="Math.h" />
@@ -206,7 +201,6 @@
     <ClInclude Include="MenuNode.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ReturnToMenuDialogState.h" />
-    <ClInclude Include="ReturnToMenuDialogStateUI.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>

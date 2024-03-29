@@ -10,6 +10,6 @@ namespace ApplesGame
 		sf::Text buttonToPressText;
 	public:
 		void Init(sf::Font& textFont);
-		void Draw(sf::RenderWindow& window);
+		void Draw(sf::RenderWindow& window) const;
 	};
 }

@@ -49,7 +49,7 @@ namespace ApplesGame
 		sf::Sound playerDeathSound;
 
 		std::unordered_map<GameModes, std::unordered_map<std::string, int>> recordTableData;
-		GameModes currentGameMode{ GameModes::FiniteApllesWithAcceleration };
+		GameModes currentGameMode{ GameModes::FiniteApplesWithoutAcceleration };
 
 		// Resources
 		sf::Font font;

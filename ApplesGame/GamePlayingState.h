@@ -38,7 +38,7 @@ namespace ApplesGame
         void EndGame(bool isWinned = false);
 
     public:
-        GamePlayingState(Game* currentGame, int finiteApplesCount, sf::Sound * appleEatenSound, sf::Sound * playerDeathSound);
+        GamePlayingState(Game* currentGame, int finiteApplesCount, sf::Sound* appleEatenSound, sf::Sound* playerDeathSound);
         GameState GetGameState() const override { return GameState::Playing; };
         void Update(const float deltaTime) override;
         void Draw(sf::RenderWindow& window);

@@ -1,197 +1,236 @@
-#include "Game.h"
 #include <assert.h>
+#include <fstream>
+#include <list>
+#include "Game.h"
 #include "Constants.h"
 #include "Math.h"
 #include "Player.h"
+#include "Utility.h"
+#include "ReturnToMenuDialogState.h"
+#include "GameRecordsTableState.h"
+#include "GamePlayingState.h"
+#include "GameOveredState.h"
+#include "MainMenuState.h"
+
 
 namespace ApplesGame
 {
-	void StartGamePlayingState(Game& game)
+	Game::Game()
 	{
-		// Init player
-		InitPlayer(game.player, game);
-		SetPlayerPosition(game.player, Position2D{ SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f });
-		SetPlayerSpeed(game.player, INITIAL_SPEED);
-		SetPlayerDirection(game.player, PlayerDirection::Right);
-		// Init apples
-		game.apples.InitApples(GetRandomIntInRange(MIN_APPLES, MAX_APPLES), game);
-		// Init rocks	
-		for (auto& rock : game.rocks)
-		{
-			while (TryToSetRockPosition(rock, game.noRocksRectangle, GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT)));
-		}
-		game.numEatenApples = 0;
-		game.timeSinceGameOvered = 0;
+#ifndef NDEBUG
+		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
+		assert(appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
+		assert(playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
+#else
+		font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf");
+		appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav");
+		playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav");		
+#endif // !NDEBGUG
+
+		//Get apples count for finite apple game modes
+		finiteApplesCount = GetRandomIntInRange(MIN_APPLES, MAX_APPLES);
+		playerDeathSound.setBuffer(playerDeathSoundBuffer);
+		appleEatenSound.setBuffer(appleEatenSoundBuffer);
+		
+		PushGameState(GameState::MainMenu, GameState::None);
+		InitRecordTablesData();
 	}
 
-	void InitGame(Game& game)
+	Game::~Game()
 	{
-		assert(game.font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Medium.ttf"));
-		assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "/Player.png"));
-		assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "/Apple.png"));
-		assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "/Rock.png"));
-		assert(game.appleEatenSoundBuffer.loadFromFile(RESOURCES_PATH + "/AppleEat.wav"));
-		assert(game.playerDeathSoundBuffer.loadFromFile(RESOURCES_PATH + "/Death.wav"));
-
-		InitUI(game.uiState, game.font);
-		game.playerDeathSound.setBuffer(game.playerDeathSoundBuffer);
-		game.appleEatenSound.setBuffer(game.appleEatenSoundBuffer);
-		game.windowRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {SCREEN_WIDTH, SCREEN_HEIGHT} };
-		game.noRocksRectangle = Rectangle{ {SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f}, {PLAYER_SIZE * NO_ROCKS_ZONE, PLAYER_SIZE * NO_ROCKS_ZONE} };
-
-		InitPlayer(game.player, game);
-		game.numEatenApples = 0;
-		for (auto& rock : game.rocks)
+		while (!gameStateStack.empty())
 		{
-			InitRock(rock, game);
-		}
-		StartGameStartingState(game);
-	}
-
-	void StartGameOveredState(Game& game)
-	{
-		SetGameOveredTypeStateUI(game.uiState, game.gameState);
-		if (!(game.gameState & Game::GameState::IsGameWinned))
-		{
-			game.playerDeathSound.play();
-		}
-		game.timeSinceGameOvered = 0.f;
-		game.gameState |= Game::GameState::IsGameOvered;
-	}
-
-	void UpdateGame(Game& game, const float deltaTime)
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !(game.gameState & Game::GameState::IsGameRestarting))
-		{
-			StartGameStartingState(game);
-		}
-		if (game.gameState & Game::GameState::IsGameRestarting)
-		{
-			UpdateGameStartingState(game);
-		}
-		else if (!(game.gameState & Game::GameState::IsGameOvered))
-		{
-			UpdateGamePlayingState(game, deltaTime);
-		}
-		else
-		{
-			UpdateGameOveredState(game, deltaTime);
+			GameStateBase* gameState = gameStateStack.back();
+			delete gameState;
+			gameStateStack.pop_back();
 		}
 	}
 
-	void UpdateGamePlayingState(Game& game, const float deltaTime)
+	void Game::Update(const float deltaTime)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		GetCurrentGameState()->Update(deltaTime);
+		UpdateGameState();
+	}
+
+	void Game::Draw(sf::RenderWindow& window)
+	{
+		if (GetCurrentGameState()->GetGameState() == GameState::ReturnToMenuDialog || GetCurrentGameState()->GetGameState() == GameState::Overed)
 		{
-			SetPlayerDirection(game.player, PlayerDirection::Right);
+			(*(gameStateStack.end() - 2))->Draw(window);
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		GetCurrentGameState()->Draw(window);
+	}
+
+	void Game::setCurrentGameMode(GameModes gameMode)
+	{
+		currentGameMode = gameMode;
+	}
+
+	bool Game::IsGameShuttingDown() const
+	{
+		return isShuttingDown;
+	}
+
+	void Game::Shutdown()
+	{
+		isShuttingDown = true;
+	}
+
+	void Game::AddGameStateSwitchIfQueueEmpty(StateMachineSwitch machineSwitch)
+	{
+		if (gameStateSwitchQueue.empty())
 		{
-			SetPlayerDirection(game.player, PlayerDirection::Up);
+			gameStateSwitchQueue.push(machineSwitch);
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	}
+
+	void Game::SetGameWinnedState(bool currentGameWinned)
+	{
+		isGameWinned = currentGameWinned;
+	}
+
+	void Game::SetGameApplesEaten(int applesEaten)
+	{
+		numEatenApples = applesEaten;
+		recordTableData[currentGameMode][PLAYER_NAME] = std::max(recordTableData[currentGameMode][PLAYER_NAME], numEatenApples);
+	}
+
+	int Game::GetGameApplesEaten() const
+	{
+		return numEatenApples;
+	}
+
+	bool Game::GetIsGameWined() const
+	{
+		return isGameWinned;
+	}
+
+	GameModes Game::GetCurrentGameMode() const
+	{
+		return currentGameMode;
+	}
+
+	GameStateBase* Game::GetCurrentGameState()
+	{
+		return gameStateStack.back();
+	}
+
+	void Game::InitRecordTablesData()
+	{
+		recordTableData.reserve(GAME_MODES_COUNT);
+		// Setup input stream for reading player names for record table
+		std::ifstream playerNamesInputStream(RESOURCES_PATH + "/recordTableNicknames.txt");
+		std::vector<std::string> initialPlayerNames;
+		std::string currentPlayerName;
+
+		recordTableData.reserve(GAME_MODES_COUNT);
+
+		while (std::getline(playerNamesInputStream, currentPlayerName))
 		{
-			SetPlayerDirection(game.player, PlayerDirection::Left);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			SetPlayerDirection(game.player, PlayerDirection::Down);
+			initialPlayerNames.push_back(currentPlayerName);
 		}
 
-		UpdatePlayerPosition(game.player, deltaTime);
-
-		//apple collision check
-		for (auto& apple : game.apples)
+		for (int i = 0; i < GAME_MODES_COUNT; ++i)
 		{
-			if (DoShapesCollide(GetAppleCollider(apple), GetPlayerCollider(game.player)) && !IsAppleEaten(apple))
+			std::unordered_map<std::string, int> currentTable;
+			for (int j = 0; j < RECORDS_TABLE_SIZE - 1; ++j)
 			{
-				++game.numEatenApples;
-				game.appleEatenSound.play();
-				if (game.gameState & Game::GameState::IsWithAcceleration)
+				int k;
+				do
 				{
-					SetPlayerSpeed(game.player, GetPlayerSpeed(game.player) + ACCELERATION);
-				}
-				if (game.gameState & Game::GameState::IsInfiniteApples)
-				{
-					SetApplePosition(apple, GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
-				}
-				else 
-				{
-					SetAppleEaten(apple);
-					if (game.numEatenApples == game.apples.ApplesCount())
-					{
-						game.gameState |= Game::GameState::IsGameWinned;
-						StartGameOveredState(game);
-					}
-				}
+					k = GetRandomIntInRange(0, (int) initialPlayerNames.size() - 1);
+				} while (currentTable.contains(initialPlayerNames[k]));
+				currentTable.emplace(initialPlayerNames[k], GetRandomIntInRange(0, 
+					(i & GameOptions::InfiniteApples) ? (int) (MAX_APPLES * RECORDS_TABLE_MAX_COEFFICIENT) : finiteApplesCount));
 			}
+			currentTable.emplace(PLAYER_NAME, 0);
+			recordTableData.emplace((GameModes)i, currentTable);
+		}
+		playerNamesInputStream.close();
+	}
+
+	void Game::PushGameState(GameState newState, GameState previousState)
+	{
+		GameStateBase* gameState = nullptr;
+
+		switch (newState)
+		{
+		case GameState::MainMenu:
+		{
+			gameState = new MainMenuState(this);
+			break;
+		}
+		case GameState::Playing:
+		{
+			gameState = new GamePlayingState(this, finiteApplesCount, &appleEatenSound, &playerDeathSound);
+			break;
+		}
+		case GameState::Overed:
+		{
+			gameState = new GameOveredState(this);
+			break;
+		}
+		case GameState::RecordTable:
+		{
+			bool fromMenu = previousState == GameState::MainMenu;
+			gameState = new GameRecordsTableState(this, recordTableData, currentGameMode, fromMenu);
+			break;
+		}
+		case GameState::ReturnToMenuDialog:
+		{
+			gameState = new ReturnToMenuDialogState(this);
+			break;
+		}
 		}
 
-		//border collision check
-		if (IsNotCompletelyInRectangle(GetPlayerCollider(game.player), game.windowRectangle))
-		{
-			StartGameOveredState(game);
-		}
+		gameStateStack.push_back(gameState);
+	}
 
-		//rocks collision check
-		for (auto& rock : game.rocks)
+	void Game::PopGameState()
+	{
+		if (!gameStateStack.empty())
 		{
-			if (DoShapesCollide(GetPlayerCollider(game.player), getRockCollider(rock)))
+			GameStateBase * currentGameState = gameStateStack.back();
+			delete currentGameState;
+			gameStateStack.pop_back();
+		}
+	}
+	
+	void Game::UpdateGameState()
+	{
+		if (!gameStateSwitchQueue.empty())
+		{
+			StateMachineSwitch currentSwitch = gameStateSwitchQueue.front();
+			gameStateSwitchQueue.pop();
+			GameState previousGameState = GetCurrentGameState()->GetGameState();
+			switch (currentSwitch.first)
 			{
-				StartGameOveredState(game);
-			}
-		}
-		UpdateGamePlayingStateUI(game.uiState, game);
-	}
-
-	void UpdateGameOveredState(Game& game, const float deltaTime)
-	{
-		game.timeSinceGameOvered += deltaTime;
-		if (game.timeSinceGameOvered >= RESTART_TIME)
-		{
-			StartGameStartingState(game);
-		}
-		UpdateGameOveredStateUI(game.uiState, game);
-	}
-
-	void DrawGame(sf::RenderWindow& window, Game& game)
-	{
-		if (!(game.gameState & Game::GameState::IsGameRestarting))
-		{
-			DrawPlayer(game.player, window);
-			game.apples.DrawApples(window);
-			for (auto& rock : game.rocks)
+			case GameStateChangeType::Pop:
 			{
-				DrawRock(rock, window);
+				PopGameState();
+				break;
 			}
-		}
-		DrawUI(game.uiState, window, game.gameState);
-	}
-	void StartGameStartingState(Game& game)
-	{
-		game.gameState |= Game::GameState::IsGameRestarting;
-	}
-	void UpdateGameStartingState(Game& game)
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
-		{
-			game.gameState = Game::GameState::IsInfiniteApples | Game::GameState::IsWithAcceleration;
-			StartGamePlayingState(game);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-		{
-			game.gameState = Game::GameState::IsInfiniteApples;
-			StartGamePlayingState(game);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
-		{
-			game.gameState = Game::GameState::IsWithAcceleration;
-			StartGamePlayingState(game);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-		{
-			game.gameState = 0;
-			StartGamePlayingState(game);
+			case GameStateChangeType::Switch:
+			{
+				PopGameState();
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			case GameStateChangeType::Push:
+			{
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			case GameStateChangeType::ClearStackAndPush:
+			{
+				while (!gameStateStack.empty())
+				{
+					PopGameState();
+				}
+				PushGameState(currentSwitch.second, previousGameState);
+				break;
+			}
+			}
 		}
 	}
 }

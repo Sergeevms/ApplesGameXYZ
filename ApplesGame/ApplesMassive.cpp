@@ -3,37 +3,54 @@
 
 namespace ApplesGame
 {
-	ApplesMassive::~ApplesMassive()
+	ApplesMassive::ApplesMassive()
 	{
-		if (apples)
-			delete[] apples;
+		apples.reserve(MAX_APPLES);
+		isAppleEaten.reserve((MAX_APPLES >> appleEatenMassiveBitOffset) + 1);
 	}
-	void ApplesMassive::InitApples(const int newApplesCount, const Game& game)
-	{
-		if (apples)
-			delete[] apples;
-		apples = new Apple[newApplesCount];
+
+	void ApplesMassive::InitApples(const int newApplesCount, const sf::Texture& appleTexture)
+	{		
 		applesCount = newApplesCount;
-		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
+		for (int i = 0; i < applesCount; ++i)
 		{
-			InitApple(*apple, game);
+			apples.push_back(Apple(appleTexture));
+		}
+		for (int i = 0; i < (newApplesCount >> appleEatenMassiveBitOffset) + 1; ++i)
+		{
+			isAppleEaten.push_back(0);
 		}
 	}
 
 	void ApplesMassive::DrawApples(sf::RenderWindow& window)
 	{
-		for (Apple* apple = apples; apple < apples + applesCount; ++apple)
+		for (int i = 0; i < applesCount; ++i)
 		{
-			if (!apple->appleEaten)
+			if (!(isAppleEaten[(i >> appleEatenMassiveBitOffset)] & (1 << (i & applesEatenMask))))
 			{
-				DrawApple(*apple, window);
+				apples[i].DrawApple(window);
 			}
 		}
 	}
 
-	Apple* ApplesMassive::begin()
+	bool ApplesMassive::IsAppleEaten(const int i)
 	{
-		return apples;
+		return isAppleEaten[i >> appleEatenMassiveBitOffset] & (1 << (i & applesEatenMask));
+	}
+
+	void ApplesMassive::SetAppleEaten(const int i)
+	{
+		isAppleEaten[i >> appleEatenMassiveBitOffset] |= (1 << (i & applesEatenMask));
+	}
+
+	int ApplesMassive::GetCount() const
+	{
+		return applesCount;
+	}
+
+	std::vector<Apple>::iterator ApplesMassive::Begin()
+	{
+		return apples.begin();
 	}
 
 	int ApplesMassive::ApplesCount() const
@@ -41,8 +58,13 @@ namespace ApplesGame
 		return applesCount;
 	}
 
-	Apple* ApplesMassive::end()
+	Apple& ApplesMassive::operator[](int i)
 	{
-		return apples + applesCount;
+		return apples[i];
+	}
+
+	std::vector<Apple>::iterator ApplesMassive::End()
+	{
+		return apples.end();
 	}
 }

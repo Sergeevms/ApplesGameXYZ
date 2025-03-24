@@ -4,8 +4,6 @@
 
 namespace ApplesGame
 {
-	struct Game;
-
 	enum class PlayerDirection
 	{
 		Right = 0,
@@ -14,20 +12,23 @@ namespace ApplesGame
 		Down
 	};
 
-	struct Player
+	class Player
 	{
-		Position2D playerPosition;
-		float playerSpeed;
-		PlayerDirection playerDirection;
+		Position2D position;
+		float speed;
+		PlayerDirection direction;
 		sf::Sprite sprite;
+	public:
+		void Init(const sf::Texture& playerTexture);
+		void Draw(sf::RenderWindow& window);
+		void SetDirection(const PlayerDirection newDirection);
+		void SetSpeed(const float newPlayerSpeed);
+		void SetPosition(const Position2D newPosition);
+		Position2D GetPosition() const;
+		float GetSpeed() const;
+		void UpdatePosition(const float deltaTime);
+		Circle GetCollider();
 	};
 
-	void InitPlayer(Player& player, const Game& game);
-	void DrawPlayer(Player& player, sf::RenderWindow& window);
-	void SetPlayerDirection(Player& player, const PlayerDirection playerDirection);
-	void SetPlayerSpeed(Player& player, const float playerSpeed);
-	void SetPlayerPosition(Player& player, const Position2D position);
-	float GetPlayerSpeed(const Player& player);
-	void UpdatePlayerPosition(Player& player, const float deltaTime);
-	Circle GetPlayerCollider(const Player& player);
+	
 }

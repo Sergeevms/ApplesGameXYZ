@@ -23,6 +23,15 @@ namespace ApplesGame
 		Vector2D size;
 	};
 
+	/* Origin position coordinate relative to Left Top corner;
+		x, y must be in [0, 1] range; 
+		{1.f, 1.f} for bottom right corner, {0.f, 0.f} fo left top,	{0.5f, 0} for middle in x axis, top in y axis, etc.	*/
+	struct RelativeOrigin
+	{
+		float x = 0.f;
+		float y = 0.f;
+	};
+
 	Position2D GetRandomPositionInScreen(const float screenWidth, const float screenHeight);
 	int GetRandomIntInRange(const int min, const int max);
 
@@ -33,5 +42,22 @@ namespace ApplesGame
 	bool IsNotCompletelyInRectangle(const Circle& Circle, const Rectangle& Rectangle);
 
 	void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight);
-	void SetSpriteOrigin(sf::Sprite& sprite, const float originX, const float originY);
+
+	
+	/*Consept for function to set origin by RelativeOrigin*/
+	template <typename T>
+	concept haveMethodsForRelativeOriginSetGet = requires(T & a, float x)
+	{
+		{ a.getLocalBounds() }-> std::same_as<sf::FloatRect>;
+		a.setOrigin(x, x);
+	};
+
+	/*Function to set origin by RelativeOrigin*/
+	template<typename T>
+	void SetOriginByRelative(T& object, const RelativeOrigin relativeOrigin)
+		requires haveMethodsForRelativeOriginSetGet<T>
+	{
+		const sf::FloatRect objectBoundRect = object.getLocalBounds();
+		object.setOrigin(objectBoundRect.width * relativeOrigin.x, objectBoundRect.height * relativeOrigin.y);
+	}
 }

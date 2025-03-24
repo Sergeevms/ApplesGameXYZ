@@ -4,28 +4,28 @@
 
 namespace ApplesGame
 {
-	void InitRock(Rock& rock, const Game& game)
+	void Rock::InitRock(const sf::Texture& rockTexture)
 	{
-		rock.sprite.setTexture(game.rockTexture);
-		SetSpriteSize(rock.sprite, ROCK_SIZE, ROCK_SIZE);
-		SetSpriteOrigin(rock.sprite, 0.5f, 0.5f);
+		sprite.setTexture(rockTexture);
+		SetSpriteSize(sprite, ROCK_SIZE, ROCK_SIZE);
+		SetOriginByRelative(sprite, RelativeOrigin{ 0.5f, 0.5f });
 	}
 
-	bool TryToSetRockPosition(Rock& rock, const Rectangle& noRocksRectangle, const Position2D position)
+	bool Rock::TryToSetRockPosition(const Rectangle& noRocksRectangle, const Position2D newPosition)
 	{
-		rock.rockPosition.x = position.x;
-		rock.rockPosition.y = position.y;
-		return DoShapesCollide(noRocksRectangle, getRockCollider(rock));
+		position.x = newPosition.x;
+		position.y = newPosition.y;
+		return DoShapesCollide(noRocksRectangle, GetCollider());
 	}
 
-	void DrawRock(Rock& rock, sf::RenderWindow& window)
+	void Rock::Draw(sf::RenderWindow& window)
 	{
-		rock.sprite.setPosition({ rock.rockPosition.x, rock.rockPosition.y });
-		window.draw(rock.sprite);
+		sprite.setPosition({ position.x, position.y });
+		window.draw(sprite);
 	}
 
-	Rectangle getRockCollider(const Rock& rock)
+	Rectangle Rock::GetCollider()
 	{
-		return Rectangle{ rock.rockPosition, Vector2D{ROCK_SIZE, ROCK_SIZE} };
+		return Rectangle{ position, Vector2D{ROCK_SIZE, ROCK_SIZE} };
 	}
 }

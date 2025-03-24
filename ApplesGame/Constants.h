@@ -12,8 +12,8 @@ namespace ApplesGame
 	const float ACCELERATION = 10.f;
 	const float PLAYER_SIZE = 20.f;
 
-	const int MIN_APPLES = 10;
-	const int MAX_APPLES = 25;
+	const int MIN_APPLES = 15;
+	const int MAX_APPLES = 30;
 	const float APPLE_SIZE = 20.f;
 
 	const float RECORD_TABLE_RESTART_TIME = 60.f;
@@ -30,4 +30,8 @@ namespace ApplesGame
 	const int APPLES_COLLIDER_GRID_HEIGHT = 12;
 
 	const int GAME_MODES_COUNT = 4;
+
+	const float TEXT_SPACING = 4.f;
+
+	const std::string PLAYER_NAME("Player");
 }

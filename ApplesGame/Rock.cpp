@@ -8,14 +8,14 @@ namespace ApplesGame
 	{
 		sprite.setTexture(rockTexture);
 		SetSpriteSize(sprite, ROCK_SIZE, ROCK_SIZE);
-		SetSpriteOrigin(sprite, 0.5f, 0.5f);
+		SetOriginByRelative(sprite, RelativeOrigin{ 0.5f, 0.5f });
 	}
 
 	bool Rock::TryToSetRockPosition(const Rectangle& noRocksRectangle, const Position2D newPosition)
 	{
 		position.x = newPosition.x;
 		position.y = newPosition.y;
-		return DoShapesCollide(noRocksRectangle, getCollider());
+		return DoShapesCollide(noRocksRectangle, GetCollider());
 	}
 
 	void Rock::Draw(sf::RenderWindow& window)
@@ -24,7 +24,7 @@ namespace ApplesGame
 		window.draw(sprite);
 	}
 
-	Rectangle Rock::getCollider()
+	Rectangle Rock::GetCollider()
 	{
 		return Rectangle{ position, Vector2D{ROCK_SIZE, ROCK_SIZE} };
 	}
